@@ -2,11 +2,24 @@
 from hbase.ttypes import Mutation, BatchMutation
 from thrift.transport.TSocket import TSocket
 from thrift.transport.TTransport import TBufferedTransport
-from thrift.protocol import TBinaryProtocol, TCompactProtocol
+from thrift.protocol import TBinaryProtocol
 from hbase import Hbase
 
 __author__ = 'wangcx'
 
+class HbaseUtil:
+
+    @staticmethod
+    def getBatchMutations(cf,qualifiers,tups):
+        batchMutations=[]
+        for tup in tups:
+            mutations = []
+            for i in range(1,len(qualifiers)):
+                mutation = Mutation(column="%s:%s" % (cf,qualifiers[i]),value=tup[i])
+                mutations.append(mutation)
+            batchMutation = BatchMutation(tup[0],mutations)
+            batchMutations.append(batchMutation)
+        return batchMutations
 
 class HbaseClient:
     def __init__(self):
