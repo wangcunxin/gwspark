@@ -1,7 +1,5 @@
 # -*- coding:utf8 -*-
 
-import psycopg2
-from hbase.ttypes import Mutation, BatchMutation
 from spark.datacenter.etl.hbase_client import HbaseClient, HbaseUtil
 from spark.datacenter.etl.mongodb_client import MongodbClient
 
