@@ -7,19 +7,17 @@ __author__ = 'wangcx'
 
 if __name__ == '__main__':
     '''
-    oracle:member,point,memberinfo,Charge,payment
     postgresql:comment
-    mongo:user_attention,user_be_attention
     '''
-    # pip install cx_Oracle,PsyCopg,pymongo,hbase-thrift
     try:
+        dat = "201608"
         postgresqlClient = PostgresqlClient("wala")
-        sql = "SELECT memberid,count(1),sum(flowernum),sum(replycount) FROM comment_201608 group by memberid limit 10;"
+        sql = "SELECT memberid,count(1),sum(flowernum),sum(replycount) FROM comment_%s group by memberid;" % dat
         rows = postgresqlClient.query(sql)
         tups = []
         for row in rows:
             mutations = []
-            userid = str(row[0])
+            userid = dat+"#"+str(row[0])
             commentcount = str(row[1])
             flowernum = str(row[2])
             replycount = str(row[3])
@@ -33,7 +31,7 @@ if __name__ == '__main__':
         print len(batchMutations)
         # save
         hbase_client = HbaseClient()
-        tableName = "up_dat2"
+        tableName = "up_dat"
         # cf = ["DF:ip_cities",]
         # print hbase_client.get(tableName, "17578029")
         # hbase_client.scan(tableName, cf)

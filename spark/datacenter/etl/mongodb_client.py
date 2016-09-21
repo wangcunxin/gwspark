@@ -27,4 +27,4 @@ class MongodbClient:
         return self.mongoDatabase.get_collection(colName)
 
     def findAll(self, collectionName):
-        return list(self.mongoDatabase.get_collection(collectionName).find())
+        return self.mongoDatabase.get_collection(collectionName).find()

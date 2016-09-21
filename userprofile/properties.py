@@ -1,3 +1,5 @@
+import platform
+
 __author__ = 'wangcx'
 
 class Properties(object):
@@ -8,10 +10,16 @@ class Properties(object):
         try:
             pro_file = open(fileName, 'r')
             try:
+                os = platform.system().lower()
+                sep='\r\n'
+                if(os.__eq__("windows")):
+                    sep='\n'
+                elif(os.__eq__("linux")):
+                    sep='\r\n'
                 properties = {}
                 for line in pro_file:
                     if line.find('=') > 0:
-                        strs = line.replace('\n', '').split('=')
+                        strs = line.replace(sep, '').split('=')
                         properties[strs[0]] = strs[1]
             except Exception, e1:
                 print e1

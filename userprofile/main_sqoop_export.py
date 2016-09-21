@@ -1,6 +1,6 @@
 #-*- coding:utf8 -*-
 import os
-from gwup.properties import Properties
+from userprofile.properties import Properties
 
 __author__ = 'wangcx'
 
@@ -17,7 +17,7 @@ if __name__ == '__main__':
     dat='2016-01-01'
 
     # load config
-    conf_file = "e:/tmp/pros.properties"
+    conf_file = "config-postgresql.properties"
     prop = Properties()
     conf = prop.getProperties(conf_file)
 

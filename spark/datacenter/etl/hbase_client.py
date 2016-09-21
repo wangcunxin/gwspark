@@ -67,4 +67,13 @@ class HbaseClient:
         self.client.mutateRow(tableName, rk, mutations)
 
     def insertMany(self, tableName, batchMutations):
-        self.client.mutateRows(tableName, batchMutations)
+        size = len(batchMutations)
+        if(size>2000):
+            batch = []
+            for i in range(0,size):
+                batch.append(batchMutations[i])
+                if(i%2000==0):
+                    self.client.mutateRows(tableName, batch)
+                    batch = []
+        else:
+            self.client.mutateRows(tableName, batchMutations)
