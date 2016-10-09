@@ -10,12 +10,15 @@ if __name__ == '__main__':
     postgresql:comment
     '''
     try:
-        dat = "201608"
+        dat = "201301"
         postgresqlClient = PostgresqlClient("wala")
-        sql = "SELECT memberid,count(1),sum(flowernum),sum(replycount) FROM comment_%s group by memberid;" % dat
+        #sql = "SELECT memberid,count(1),sum(flowernum),sum(replycount) FROM comment where addtime between to_date('%s','yyyyMMdd') and to_date('%s','yyyyMMdd') group by memberid;" % ("20130103","20130104")
+        sql = "SELECT * FROM comment limit 100"
+        print sql
         rows = postgresqlClient.query(sql)
         tups = []
         for row in rows:
+            print row
             mutations = []
             userid = dat+"#"+str(row[0])
             commentcount = str(row[1])
@@ -30,12 +33,12 @@ if __name__ == '__main__':
         batchMutations = HbaseUtil.getBatchMutations(cf, qualifiers, tups)
         print len(batchMutations)
         # save
-        hbase_client = HbaseClient()
+        #hbase_client = HbaseClient()
         tableName = "up_dat"
         # cf = ["DF:ip_cities",]
         # print hbase_client.get(tableName, "17578029")
         # hbase_client.scan(tableName, cf)
-        hbase_client.insertMany(tableName, batchMutations)
+        #hbase_client.insertMany(tableName, batchMutations)
 
     except Exception, e:
         print e
