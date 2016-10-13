@@ -12,16 +12,24 @@ def mean():
 
 
 def file():
-    path = "/home/kevin/users.csv"
+    path = "/home/kevin/temp/users.csv"
     file = open(path, "r")
     matrix = np.loadtxt(file, delimiter=",", skiprows=0)
     avg_column = np.mean(matrix, axis=0)
+    file_avg = open("/home/kevin/temp/users-avg.csv","w")
+    #print(avg_column)
+    arr = []
+    for i in range(0,len(avg_column)):
+        #print(avg_column[i])
+        avg = round(avg_column[i],2)
+        arr.append("%d\t%s\n" % (i,avg))
+        #arr.append(avg)
 
-    print(avg_column)
-
-    for avg in avg_column:
-        print(avg)
-
+    print(arr)
+    #np.savetxt('/home/kevin/temp/users-avg.csv', arr, delimiter=',')
+    file_avg.writelines(arr)
+    file.close()
+    file_avg.close()
 
 if __name__ == '__main__':
     # mean()
