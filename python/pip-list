@@ -1,0 +1,8 @@
+sudo pip install cx_Oracle  --trusted-host http://mirrors.aliyun.com/pypi/simple
+
+#ml
+scikit-learn,scipy
+
+
+#etl
+pip install cx_Oracle,psycopg2,pymongo,hbase-thrift,pymysql
