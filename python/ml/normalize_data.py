@@ -23,7 +23,7 @@ def normalize2(X):
     print X_train
 
 
-def normalize3(X):
+def normalize3(X,y):
     from sklearn.grid_search import GridSearchCV
     from sklearn.linear_model import SGDClassifier
     parameters = {'alpha': [0.1, 1, 10]}
@@ -56,7 +56,7 @@ if __name__ == '__main__':
     #normalize2(X)
 
     # cv
-    normalize3(X)
+    normalize3(X,y)
 
     raw_data.close()
 
