@@ -25,10 +25,11 @@ def scale(X):
     # 标准化:z-score
     from sklearn.preprocessing import StandardScaler
     scaler = StandardScaler()
-    scaler.fit(X)  # Don't cheat - fit only on training data
+    scaler.fit(X)
     print X[0]
 
     x = scaler.transform(X)
+    #x = scaler.fit_transform(X)
     print x[0]
 
     # 区间缩放法:MinMaxScaler
@@ -81,7 +82,7 @@ if __name__ == '__main__':
     # 数据标准化
     scale(X)
 
-    # 数据归一化
+    # 数据归一化[0,1]
     normalize(X)
 
     # SGD对于数据的缩放很敏感,最好先对数据进行缩放（scale）处理
