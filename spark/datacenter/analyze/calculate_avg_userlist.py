@@ -50,12 +50,11 @@ if __name__ == '__main__':
 
             fos_rating.writelines(rating)
 
-        except Exception, e:
-            print(e)
+        finally:
+            fis.close()
+            fin.close()
+            fos_avg.close()
+            fos_rating.close()
+
     except Exception, e:
         print(e)
-    finally:
-        fis.close()
-        fin.close()
-        fos_avg.close()
-        fos_rating.close()

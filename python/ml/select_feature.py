@@ -39,9 +39,7 @@ if __name__ == '__main__':
             # display the relative importance of each attribute
             print(model.feature_importances_)
 
-        except Exception, e:
-            print(e)
+        finally:
+            fis.close()
     except Exception, e:
         print(e)
-    finally:
-        fis.close()

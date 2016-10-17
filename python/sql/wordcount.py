@@ -10,10 +10,12 @@ from pyspark import SparkContext, SparkConf
 __author__ = 'kevin'
 
 
-def my_print(l):
-    # 中文测试
-    print(l)
-
+def filter_special(kv,words):
+    #sum +=1
+    ret = True
+    if kv[0].strip() in words:
+        ret = False
+    return ret
 if __name__ == '__main__':
     master = "local[1]"
     app_name = "spark_sql_wc"
@@ -29,18 +31,18 @@ if __name__ == '__main__':
             #.set('spark.io.compression.codec','snappy'))
     sc = SparkContext(conf=conf)
 
-    #sum = sc.accumulator(0)
-    #bcv = sc.broadcast([1,2,3])
+    sum = sc.accumulator(0,"my accumulator")
+    bcv = sc.broadcast(["etc","and","models"])
 
     lines = sc.textFile(input)
 
     word_count = lines.flatMap(lambda line: line.split(","))\
         .map(lambda word: (word, 1))\
-        .reduceByKey(add)
-    word_count.foreach(my_print)
+        .reduceByKey(add).filter(lambda kv:filter_special(kv,bcv.value))
+    word_count.foreach(print)
 
+    print(sum.value)
 
-    #print bcv.value
     sc.stop()
 
 
