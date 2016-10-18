@@ -1,18 +1,25 @@
 # -*- coding:utf-8 -*-
 
-import urllib2
-
 __author__ = 'kevin'
 
 
-def urllib2():
+def test1():
+    import urllib2
+    response = urllib2.urlopen('http://python.org/')
+    html = response.read()
+    print html
+
+
+def test2():
+    import urllib2
     req = urllib2.Request('http://www.pythontab.com')
     response = urllib2.urlopen(req)
     html = response.read()
     print html
 
-if __name__ == '__main__':
 
-    urllib2()
+if __name__ == '__main__':
+    # test1()
+    test2()
 
     pass

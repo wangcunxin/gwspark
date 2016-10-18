@@ -4,6 +4,27 @@ import numpy as np
 
 __author__ = 'kevin'
 
+
+def prepare_file(path,pre_path):
+    try:
+
+        fin = open(path, "r")
+        fos = open(pre_path, "w")
+        try:
+            lines = []
+            for line in fin.readlines():
+                row = line.strip().split(sep)
+                # label=1 avg_count>0
+                if float(row[0])==0 or float(row[14])==0:
+                    continue
+                lines.append(line)
+            fos.writelines(lines)
+        finally:
+            fin.close()
+            fos.close()
+    except Exception,e:
+        print(e)
+
 if __name__ == '__main__':
     '''
     0.avg
@@ -13,7 +34,9 @@ if __name__ == '__main__':
     weight = 10
     try:
         path = "/home/kevin/temp/users.csv"
-        fis = open(path, "r")
+        pre_path = "/home/kevin/temp/users-pre.csv"
+        prepare_file(path,pre_path)
+        fis = open(pre_path, "r")
         fin = open(path, "r")
         fos_avg = open("/home/kevin/temp/users-avg.csv", "w")
         fos_rating = open("/home/kevin/temp/users-rating.csv", "w")
@@ -21,7 +44,6 @@ if __name__ == '__main__':
             matrix = np.loadtxt(fis, delimiter=",", skiprows=0)
             # avg column
             avgs = np.mean(matrix, axis=0)
-
             arr = []
             for i in range(0, len(avgs)):
                 avg = round(avgs[i], 2)
