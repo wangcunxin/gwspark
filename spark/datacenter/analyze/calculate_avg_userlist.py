@@ -158,8 +158,13 @@ def make_list2():
                     if i in (12, 10, 11):
                         continue
                     value = float(row[i])
-                    if value > 2:
-                        score += weight
+                    if i in (13, 14):
+                        if value < -2:
+                            score += weight
+                    else:
+                        if value > 2:
+                            score += weight
+
                 new_line = "%s\t%d\n" % (row[1], score)
                 rating.append(new_line)
 
