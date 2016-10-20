@@ -81,11 +81,42 @@ def test_plot2():
 
     plt.show()
 
+
+def test_plot3d():
+    from mpl_toolkits.mplot3d import Axes3D
+    x, y = np.mgrid[-2:2:20j, -2:2:20j]
+    z = x * np.exp(-x ** 2 - y ** 2)
+
+    ax = plt.subplot(111, projection='3d')
+    ax.plot_surface(x, y, z, rstride=2, cstride=1, cmap=plt.cm.coolwarm, alpha=0.8)
+    ax.set_xlabel('x')
+    ax.set_ylabel('y')
+    ax.set_zlabel('z')
+
+    plt.show()
+
+    fig = plt.figure()
+    ax = Axes3D(fig)
+    X = np.arange(-4, 4, 0.25)
+    Y = np.arange(-4, 4, 0.25)
+    X, Y = np.meshgrid(X, Y)
+    R = np.sqrt(X**2 + Y**2)
+    Z = np.sin(R)
+
+    ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap=plt.cm.hot)
+    ax.contourf(X, Y, Z, zdir='z', offset=-2, cmap=plt.cm.hot)
+    ax.set_zlim(-2,2)
+
+    plt.show()
+
+
 if __name__ == '__main__':
     #test1()
 
     #test_prepare_data()
-    test_plot()
+    #test_plot()
     #test_plot2()
+    test_plot3d()
+
 
     pass
