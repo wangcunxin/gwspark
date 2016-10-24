@@ -1,7 +1,9 @@
 # -*- coding:utf-8 -*-
-from spark.datacenter.etl.hbase_client import HBaseClient
-from sklearn.preprocessing import StandardScaler
 import numpy as np
+
+from sklearn.preprocessing import StandardScaler
+
+from spark.datacenter.etl.hbase_client import HBaseClient
 from spark.datacenter.etl.mongodb_client import MongodbClient
 from userprofile.properties import Properties
 
@@ -70,7 +72,7 @@ if __name__ == '__main__':
                     if value > 2:
                         score += weight
             key = "%s%s%s" % (dat, sep2, y2[j])
-            ele = {'_id': key, 'score': score}
+            ele = {'_id': key, 'userid': str(y2[j]), 'score': score}
             rating.append(ele)
 
         # 4.dump to mango
@@ -85,7 +87,7 @@ if __name__ == '__main__':
         dbname = conf.get("bigdata.dbname")
 
         mongodbClient = MongodbClient(host, port, dbname, username, password)
-        colName = "user_score"
+        colName = "user_rating"
         mongodbClient.setCollection(colName)
         col = mongodbClient.insertMany(rating)
     except Exception, e:
