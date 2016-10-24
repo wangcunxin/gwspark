@@ -13,9 +13,9 @@ class Properties(object):
                 os = platform.system().lower()
                 sep='\r\n'
                 if(os.__eq__("windows")):
-                    sep='\n'
-                elif(os.__eq__("linux")):
                     sep='\r\n'
+                elif(os.__eq__("linux")):
+                    sep='\n'
                 properties = {}
                 for line in pro_file:
                     if line.find('=') > 0:

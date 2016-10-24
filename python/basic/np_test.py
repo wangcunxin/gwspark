@@ -17,7 +17,7 @@ def mean():
 
 def test1():
     dnarr = np.array([1, 2, 3])
-    dnarr = np.array([(1, 2, 3), (1, 2, 3)])
+    dnarr = np.array([(1, 2, 3), (1, 11, 7),(1, 2, 9)])
     print dnarr
     print 'ndim', dnarr.ndim
     print 'shape', dnarr.shape
@@ -25,13 +25,15 @@ def test1():
     print 'dtype', dnarr.dtype
     print 'itemsize', dnarr.itemsize
     print 'type', type(dnarr)
+    print 'zhi',np.linalg.matrix_rank(dnarr)
 
 
 def test2():
     print np.arange(3)
     print np.arange(6).reshape(2, 3)
-    print np.arange(24).reshape(2, 3, 4)
-
+    ndarr = np.arange(24).reshape(2, 3, 4)
+    print ndarr.ndim
+    print ndarr
 
 def test3():
     # arithmetic
@@ -64,9 +66,9 @@ def test4():
 
 if __name__ == '__main__':
     # mean()
-    # test1()
+    test1()
     # test2()
-    test3()
+    #test3()
     #test4()
 
     pass

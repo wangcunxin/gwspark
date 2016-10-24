@@ -3,6 +3,7 @@ import math
 
 from spark.datacenter.etl.hbase_client import HbaseClient, HbaseUtil
 from spark.datacenter.etl.mongodb_client import MongodbClient
+from userprofile.properties import Properties
 
 __author__ = 'wangcx'
 
@@ -16,9 +17,19 @@ if __name__ == '__main__':
     # pip install cx_Oracle,psycopg2,pymongo,hbase-thrift,pymysql
     try:
         dat = "201608"
-        mongodbClient = MongodbClient()
+        conf_file = "../../../userprofile/config-mongodb.properties"
+        prop = Properties()
+        conf = prop.getProperties(conf_file)
+        host = conf.get("wala.host")
+        port = int(conf.get("wala.port"))
+        username = conf.get("wala.username")
+        password = conf.get("wala.password")
+        dbname = conf.get("wala.dbname")
+
+        mongodbClient = MongodbClient(host,port,dbname,username,password)
         colName = "user_attention"
-        rs = mongodbClient.findAll(colName)
+        mongodbClient.setCollection(colName)
+        rs = mongodbClient.findAll()
         tups = []
         for r in rs:
             total= str(r["total"])
@@ -38,7 +49,8 @@ if __name__ == '__main__':
         hbase_client.insertMany(tableName,batchMutations)
 
         colName = "user_be_attention"
-        rs = mongodbClient.findAll(colName)
+        mongodbClient.setCollection(colName)
+        rs = mongodbClient.findAll()
         tups = []
         for r in rs:
             total= str(r["total"])

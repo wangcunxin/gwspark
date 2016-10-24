@@ -7,21 +7,25 @@ from hbase import Hbase
 
 __author__ = 'wangcx'
 
-class HbaseUtil:
+
+class HBaseUtil:
+    def __init__(self):
+        pass
 
     @staticmethod
-    def getBatchMutations(cf,qualifiers,tups):
-        batchMutations=[]
+    def getBatchMutations(cf, qualifiers, tups):
+        batchMutations = []
         for tup in tups:
             mutations = []
-            for i in range(1,len(qualifiers)):
-                mutation = Mutation(column="%s:%s" % (cf,qualifiers[i]),value=tup[i])
+            for i in range(1, len(qualifiers)):
+                mutation = Mutation(column="%s:%s" % (cf, qualifiers[i]), value=tup[i])
                 mutations.append(mutation)
-            batchMutation = BatchMutation(tup[0],mutations)
+            batchMutation = BatchMutation(tup[0], mutations)
             batchMutations.append(batchMutation)
         return batchMutations
 
-class HbaseClient:
+
+class HBaseClient:
     def __init__(self):
         self.transport = TBufferedTransport(TSocket("192.168.2.254", 9090), 10 * 1024 * 1024)
         self.transport.open()
@@ -40,15 +44,31 @@ class HbaseClient:
         rs = self.client.getRow(tableName, rowkey)
         return rs
 
-    def scan(self, tableName, cf):
+    def scanByPrefix(self, table, prefix, cfs):
         rets = []
         try:
-            scanner = self.client.scannerOpen(tableName=tableName, startRow="", columns=cf)
+            scanner = self.client.scannerOpenWithPrefix(tableName=table, startAndPrefix=prefix, columns=cfs)
             try:
                 r = self.client.scannerGet(scanner)
                 while r:
-                    print r
-                    rets.append(str(r[0].row))
+                    rets.append(r)
+                    r = self.client.scannerGet(scanner)
+            except Exception, e:
+                print e
+            finally:
+                self.client.scannerClose(scanner)
+        except Exception, e2:
+            print e2
+        return rets
+
+    def scan(self, table, cfs):
+        rets = []
+        try:
+            scanner = self.client.scannerOpen(tableName=table, startRow="", columns=cfs)
+            try:
+                r = self.client.scannerGet(scanner)
+                while r:
+                    rets.append(r)
                     r = self.client.scannerGet(scanner)
             except Exception, e:
                 print e
@@ -68,11 +88,11 @@ class HbaseClient:
 
     def insertMany(self, tableName, batchMutations):
         size = len(batchMutations)
-        if(size>2000):
+        if (size > 2000):
             batch = []
-            for i in range(0,size):
+            for i in range(0, size):
                 batch.append(batchMutations[i])
-                if(i%2000==0):
+                if (i % 2000 == 0):
                     self.client.mutateRows(tableName, batch)
                     batch = []
         else:
