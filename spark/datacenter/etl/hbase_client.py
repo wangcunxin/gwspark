@@ -1,5 +1,6 @@
 # -*- coding:utf8 -*-
 from hbase.ttypes import Mutation, BatchMutation
+import sys
 from thrift.transport.TSocket import TSocket
 from thrift.transport.TTransport import TBufferedTransport
 from thrift.protocol import TBinaryProtocol
@@ -49,16 +50,15 @@ class HBaseClient:
         try:
             scanner = self.client.scannerOpenWithPrefix(tableName=table, startAndPrefix=prefix, columns=cfs)
             try:
-                r = self.client.scannerGet(scanner)
-                while r:
-                    rets.append(r)
-                    r = self.client.scannerGet(scanner)
-            except Exception, e:
-                print e
+                size = 10000
+                rs = self.client.scannerGetList(scanner,size)
+                while rs:
+                    rets.extend(rs)
+                    rs = self.client.scannerGetList(scanner,size)
             finally:
                 self.client.scannerClose(scanner)
-        except Exception, e2:
-            print e2
+        except Exception, e:
+            print e
         return rets
 
     def scan(self, table, cfs):
@@ -66,16 +66,15 @@ class HBaseClient:
         try:
             scanner = self.client.scannerOpen(tableName=table, startRow="", columns=cfs)
             try:
-                r = self.client.scannerGet(scanner)
-                while r:
-                    rets.append(r)
-                    r = self.client.scannerGet(scanner)
-            except Exception, e:
-                print e
+                size = 10000
+                rs = self.client.scannerGetList(scanner,size)
+                while rs:
+                    rets.extend(rs)
+                    rs = self.client.scannerGetList(scanner,size)
             finally:
                 self.client.scannerClose(scanner)
-        except Exception, e2:
-            print e2
+        except Exception, e:
+            print e
         return rets
 
     def insertOne(self, tableName, rk, kvs):

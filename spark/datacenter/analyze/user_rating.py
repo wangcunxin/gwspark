@@ -24,22 +24,12 @@ def main(argv):
         rs = hBaseClient.scanByPrefix(table, dat, cfs)
         qualifiers = "buy_times,buy_quantity,amount,discount_amount,discount_times," \
                      "days,buy_cinemas,buy_cities,avg_time,avg_count".split(",")
-        print 'load rs:len', len(rs)
+
         lines = []
         for r in rs:
-            rowkey = r[0].row.split('#')[1]
-            tmp = r[0].columns.get('DF:avg_count')
-            avg_count = 0
-            if tmp is not None:
-                avg_count = tmp.value
-
-            if avg_count == 0 or rowkey == '55859667':
-                # print 'filter:special users: rowkey=%s,avg_count=%s' % (rowkey, avg_count)
-                continue
-
-            arr = []
-            arr.append(rowkey)
-            columns = r[0].columns
+            rowkey = r.row.split('#')[1]
+            arr = [rowkey]
+            columns = r.columns
             for qualifier in qualifiers:
                 value = '0'
                 val = columns.get('DF:%s' % qualifier)
@@ -48,7 +38,7 @@ def main(argv):
                 arr.append(value)
             lines.append(sep.join(arr))
 
-        print 'filter lines:len', len(lines)
+        print 'load lines:len', len(lines)
 
         # 2.scale features
         if len(lines) == 0:
@@ -67,20 +57,24 @@ def main(argv):
         for j in range(0, len(x2)):
             x = x2[j]
             score = 0
-            for i in range(0, len(x)):
-                value = x[i]
-                if i in (8, 9):
-                    if value < -2:
-                        score += weight
-                else:
-                    if value > 2:
-                        score += weight
-            key = "%s%s%s" % (dat, sep2, y2[j])
-            ele = {'_id': key, 'userid': str(y2[j]), 'score': score}
+            userid = str(y2[j])
+            avg_count = x[9]
+            if avg_count > 0 and userid not in ('50000125','50000949','50000891','55859667'):
+                # print 'filter:special users: userid=%s,avg_count=%s' % (userid, avg_count)
+                for i in range(0, len(x)):
+                    value = x[i]
+                    if i in (8, 9):
+                        if value < -2:
+                            score += weight
+                    else:
+                        if value > 2:
+                            score += weight
+            key = "%s%s%s" % (dat, sep2, userid)
+            ele = {'_id': key, 'userid': userid, 'score': score}
             rating.append(ele)
 
         # 4.dump to mango
-        print 'rate rating:len', rating.__len__()
+        print 'rate rating:len', len(rating)
         conf_file = "../../../userprofile/config-mongodb.properties"
         prop = Properties()
         conf = prop.getProperties(conf_file)
@@ -110,4 +104,4 @@ if __name__ == '__main__':
     end = time.time()
     now = datetime.datetime.now()
     dat = now.strftime("%Y-%m-%d %H:%M:%S")
-    print dat, 'total cost', round(end - begin, 3), 's'
+    print dat, 'total cost', round((end - begin)/60, 3), 'minutes'
