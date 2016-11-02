@@ -1,9 +1,14 @@
-sudo pip install cx_Oracle  --trusted-host http://mirrors.aliyun.com/pypi/simple
+sudo pip install xgboost --trusted-host http://mirrors.aliyun.com/pypi/simple
+
+#plot
+matplotlib
 
 #ml
-scikit-learn,scipy
-
+numpy scipy scikit-learn pandas xgboost minepy
 
 #etl
 yum install postgresql-devel
-pip install psycopg2 pymongo hbase-thrift pymysql kafka-python
+pip install psycopg2 pymongo hbase-thrift pymysql kafka-python cx_Oracle
+
+
+# ~/spark_env/lib/python2.7/site-packages$ cp pyspark.pth /home/kevin/.local/lib/python2.7/site-packages
