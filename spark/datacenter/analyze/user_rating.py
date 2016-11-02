@@ -1,5 +1,7 @@
 # -*- coding:utf-8 -*-
-import datetime, time, sys
+import datetime
+import time
+import sys
 import numpy as np
 
 from sklearn.preprocessing import StandardScaler
@@ -46,10 +48,10 @@ def main(argv):
         dataset = np.loadtxt(lines, delimiter=",")
         x1 = dataset[:, 1:len(lines) + 1]
         y1 = dataset[:, 0]
-        y2 = map(int, y1)
 
         scaler = StandardScaler()
         x2 = scaler.fit_transform(x1)
+        y2 = map(int, y1)
 
         # 3.rating
         weight = 10
@@ -59,7 +61,7 @@ def main(argv):
             score = 0
             userid = str(y2[j])
             avg_count = x[9]
-            if avg_count > 0 and userid not in ('50000125','50000949','50000891','55859667'):
+            if avg_count > 0 and userid not in ('50000125', '50000949', '50000891', '55859667'):
                 # print 'filter:special users: userid=%s,avg_count=%s' % (userid, avg_count)
                 for i in range(0, len(x)):
                     value = x[i]
@@ -85,7 +87,7 @@ def main(argv):
         dbname = conf.get("bigdata.dbname")
 
         mongodbClient = MongodbClient(host, port, dbname, username, password)
-        colName = "user_rating"
+        colName = "rc_user_rating"
         mongodbClient.setCollection(colName)
         mongodbClient.insertMany(rating)
         print 'dump finish'
@@ -104,4 +106,4 @@ if __name__ == '__main__':
     end = time.time()
     now = datetime.datetime.now()
     dat = now.strftime("%Y-%m-%d %H:%M:%S")
-    print dat, 'total cost', round((end - begin)/60, 3), 'minutes'
+    print dat, 'total cost', round((end - begin) / 60, 3), 'minutes'

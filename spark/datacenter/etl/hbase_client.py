@@ -1,9 +1,8 @@
 # -*- coding:utf8 -*-
 from hbase.ttypes import Mutation, BatchMutation
-import sys
+from thrift.transport import TTransport
 from thrift.transport.TSocket import TSocket
-from thrift.transport.TTransport import TBufferedTransport
-from thrift.protocol import TBinaryProtocol
+from thrift.protocol import TCompactProtocol, TBinaryProtocol
 from hbase import Hbase
 
 __author__ = 'wangcx'
@@ -28,10 +27,11 @@ class HBaseUtil:
 
 class HBaseClient:
     def __init__(self):
-        self.transport = TBufferedTransport(TSocket("192.168.2.254", 9090), 10 * 1024 * 1024)
+        # self.transport = TTransport.TFramedTransport(TSocket("192.168.2.254", 9090))
+        self.transport = TTransport.TBufferedTransport(TSocket("192.168.2.254", 9090), 10 * 1024 * 1024)
         self.transport.open()
-        self.protocol = TBinaryProtocol.TBinaryProtocol(self.transport)
         # self.protocol = TCompactProtocol.TCompactProtocol(self.transport)
+        self.protocol = TBinaryProtocol.TBinaryProtocol(self.transport)
         self.client = Hbase.Client(self.protocol)
 
     def __del__(self):
@@ -51,10 +51,11 @@ class HBaseClient:
             scanner = self.client.scannerOpenWithPrefix(tableName=table, startAndPrefix=prefix, columns=cfs)
             try:
                 size = 10000
-                rs = self.client.scannerGetList(scanner,size)
+                rs = self.client.scannerGetList(scanner, size)
                 while rs:
                     rets.extend(rs)
-                    rs = self.client.scannerGetList(scanner,size)
+                    rs = self.client.scannerGetList(scanner, size)
+                    print size
             finally:
                 self.client.scannerClose(scanner)
         except Exception, e:
@@ -67,10 +68,10 @@ class HBaseClient:
             scanner = self.client.scannerOpen(tableName=table, startRow="", columns=cfs)
             try:
                 size = 10000
-                rs = self.client.scannerGetList(scanner,size)
+                rs = self.client.scannerGetList(scanner, size)
                 while rs:
                     rets.extend(rs)
-                    rs = self.client.scannerGetList(scanner,size)
+                    rs = self.client.scannerGetList(scanner, size)
             finally:
                 self.client.scannerClose(scanner)
         except Exception, e:

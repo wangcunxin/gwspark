@@ -22,7 +22,7 @@ if __name__ == '__main__':
 
     from sklearn import metrics
     from sklearn.linear_model import LogisticRegression
-    model = LogisticRegression()
+    model = LogisticRegression(penalty='l2',max_iter=10,n_jobs=10)
     model.fit(X, y)
     print('MODEL')
     print(model)

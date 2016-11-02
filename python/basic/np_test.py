@@ -1,3 +1,5 @@
+from numpy.ma import hsplit
+
 __author__ = 'kevin'
 
 import numpy as np
@@ -64,11 +66,23 @@ def test4():
     print walk.min(),walk.max()
 
 
+def test5():
+    x = np.arange(5,11,1).reshape(2, 3)
+    print x
+    x1 = np.log([1, np.e, np.e**2, 10])
+    x3 = np.log(x)
+    print 'e', x1, x3
+    x2 = np.log10(x)
+    print '10', x2
+    print hsplit(x,1)[0], x[:,0]
+    pass
+
 if __name__ == '__main__':
     # mean()
-    test1()
+    #test1()
     # test2()
     #test3()
     #test4()
+    test5()
 
     pass
