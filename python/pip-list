@@ -1,4 +1,4 @@
-sudo pip install xgboost --trusted-host http://mirrors.aliyun.com/pypi/simple
+sudo pip install cx_Oracle --trusted-host http://pypi.douban.com/simple
 
 #plot
 matplotlib
@@ -11,4 +11,10 @@ yum install postgresql-devel
 pip install psycopg2 pymongo hbase-thrift pymysql kafka-python cx_Oracle
 
 
-# ~/spark_env/lib/python2.7/site-packages$ cp pyspark.pth /home/kevin/.local/lib/python2.7/site-packages
+~/spark_env/lib/python2.7/site-packages/pyspark.pth
+pip install 安装在 /usr/local/lib/python2.7/dist-packages
+pycharm 自动安装默认在/home/kevin/.local/lib/python2.7/site-packages
+或者在~/spark_env/lib/python2.7/site-packages
+
+
+
