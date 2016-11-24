@@ -91,7 +91,16 @@ def test6():
     print b.cumsum()  # 计算全部行的累积和
 
 
+def test7():
+    a = np.arange(6).reshape(2, 3)
+    print a
+    print 'all', np.median(a)
+    print 'column', np.median(a, axis=0)
+    print 'row', np.median(a, axis=1)
+    x2n = np.random.randn(100, 2)
+    print x2n[0:10]
+
 if __name__ == '__main__':
-    test6()
+    test7()
 
     pass

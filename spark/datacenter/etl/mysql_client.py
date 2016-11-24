@@ -4,6 +4,7 @@ from userprofile.properties import Properties
 
 __author__ = 'wangcx'
 
+
 class MysqlClient:
     def __init__(self, dbname):
         # load config

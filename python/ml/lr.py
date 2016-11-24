@@ -3,7 +3,6 @@
 __author__ = 'kevin'
 
 if __name__ == '__main__':
-
     # 1. 加载数据(Data Loading)
 
     import numpy as np
@@ -22,7 +21,8 @@ if __name__ == '__main__':
 
     from sklearn import metrics
     from sklearn.linear_model import LogisticRegression
-    model = LogisticRegression(penalty='l2',max_iter=10,n_jobs=10)
+
+    model = LogisticRegression(penalty='l1', max_iter=10, n_jobs=10)
     model.fit(X, y)
     print('MODEL')
     print(model)
@@ -48,3 +48,15 @@ if __name__ == '__main__':
     [[447  53]
      [120 148]]
     '''
+    fpr, tpr, thresholds = metrics.roc_curve(expected, predicted)
+    print fpr
+    print tpr
+    print thresholds
+    print 'auc', metrics.auc(fpr, tpr)  # x,y
+
+    import matplotlib.pyplot as plt
+
+    plt.plot(fpr, tpr, color='r')
+    plt.show()
+
+    pass

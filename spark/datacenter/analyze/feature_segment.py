@@ -9,7 +9,8 @@ import time
 __author__ = 'kevin'
 
 
-def segment(X, Y, seg=None, n=10):
+def segment(X, Y, seg=None, n=20):
+    # Monotonic binning
     r = 0
     x1 = flatten(X)
     while 1:
@@ -59,9 +60,14 @@ def segment(X, Y, seg=None, n=10):
 
 
 if __name__ == '__main__':
+    """
+    optimal binning : Monotonic binning
+    先等频分，然后再基于x,y是否单调，来确认最佳分箱个数
+    分箱效果不理想，数字较小的特征分不出来
+    """
     begin = time.time()
     # import data
-    user_feature = "/home/kevin/temp/users2.csv"
+    user_feature = "/home/kevin/temp/users3.csv"
     features = np.loadtxt(user_feature, delimiter=',')
     qualifiers = "label,userid," \
                  "f1,f2,f3,f4,f5," \

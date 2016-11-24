@@ -95,6 +95,23 @@ def split_len():
     print len(s.split(","))
 
 
+def test4():
+    s1 = "10,13"
+    s2 = "13,15"
+    s3 = "15,18"
+    s = '18'
+
+    map = {s1: 'A1', s2: 'A2', s3: 'A3'}
+    ls = list(map.keys())
+    list.sort(ls)
+    for key in ls:
+        split = key.split(',')
+        min = float(split[0])
+        max = float(split[1])
+        if (float(s) <= max) and (float(s) >= min):
+            print map[key]
+
+
 if __name__ == '__main__':
     # test0()
     # encoding()
@@ -102,7 +119,7 @@ if __name__ == '__main__':
     # url_quote()
     # test1()
     # test2()
-    # test3()
-    split_len()
+    test4()
+    # split_len()
 
     pass

@@ -114,9 +114,9 @@ if __name__ == '__main__':
     #test1()
 
     #test_prepare_data()
-    #test_plot()
+    test_plot()
     #test_plot2()
-    test_plot3d()
+    #test_plot3d()
 
 
     pass

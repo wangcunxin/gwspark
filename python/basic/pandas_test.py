@@ -13,11 +13,12 @@ def test1():
     dates = pd.date_range('20130101', periods=6)
     print dates
     df = pd.DataFrame(np.random.randn(6, 4), index=dates, columns=list('ABCD'))
-    print df, df.head(), df.tail(3)
+    print df.head(), df.tail(3)
     print "-------------------"
     print df.index
     print df.columns
     print df.values
+    print df
     print "-------------------"
     df2 = pd.DataFrame({'A': 1.,
                         'B': pd.Timestamp('20130102'),
@@ -124,7 +125,7 @@ def test8():
     df = pd.DataFrame(np.random.randn(8, 4), columns=['A', 'B', 'C', 'D'])
     print df
     s = df.iloc[3]
-    print s
+    print 'iloc[3]', s
     print df.append(s, ignore_index=True)
 
 
@@ -212,6 +213,7 @@ def test12():
     print ts2.head()
     print ts.head(5).resample('H').mean()
 
+
 def test13():
     df = pd.DataFrame({"id":[1,2,3,4,5,6], "raw_grade":['a', 'b', 'b', 'a', 'a', 'e']})
     print df
@@ -231,7 +233,7 @@ def test14():
     matplotlib.style.use('ggplot')
     ts = pd.Series(np.random.randn(1000), index=pd.date_range('1/1/2000', periods=1000))
     ts = ts.cumsum()
-    ts.plot()
+    print ts.plot(), ts
 
     df = pd.DataFrame(np.random.randn(1000, 4), index=ts.index, columns=list('ABCD'))
     df = df.cumsum()
@@ -243,10 +245,87 @@ def test15():
     df = pd.DataFrame(np.random.randn(10, 4), index=np.arange(10), columns=list('ABCD'))
     print df
     df.to_csv('foo.csv')
-    print pd.read_csv('foo.csv')
+    df2 = pd.read_csv('foo.csv',dtype=float)
+    print df2
+    print df2.loc[:,['A','B']]
     # df.to_hdf('foo.h5','df')
+    print df2.loc[2:5]
+    print df2[df2>0]
+
+
+def test16():
+    print pd.qcut(range(10), 3)
+    print pd.qcut(range(6), 3, labels=["good","medium","bad"])
+    print pd.qcut(range(5), 3, labels=False)
+
+
+def test17():
+    df = pd.DataFrame(np.random.randn(10, 4), index=np.arange(10), columns=list('ABCD'))
+    print df.head(4)
+    df["E"] = ["bad", "medium", "good", "very good","bad", "medium", "good", "very good","great","pretty"]
+    df["F"] = ["bad1", "medium1", "good1", "very good1","bad1", "medium1", "good1", "very good1","great1","pretty1"]
+    print df.head(4)
+
+    # print 'sum',rs.sum()
+    # print 'size',rs.size()
+    # print 'count',rs.count()
+    # print 'min',rs.min().A
+    # print 'max',rs.max()
+    # print 'mean',rs.mean()
+    # print df.groupby(level=['E',"B"]).aggregate(np.sum)
+    print '-'*80
+
+    grouped = df.groupby(['E','F'])
+    # mean = grouped.mean().B
+    # print mean
+    # print '-'*80
+    # print 'size', grouped.size()
+    # print '-'*80
+    # mean_unstack = mean.unstack()
+    # print mean_unstack
+    # print '-'*80
+    # print mean_unstack.loc[:,'A']
+    # print '-'*80
+
+    # for (k1,k2),group in grouped:
+    #     print k1,k2
+    #     print group
+    # print '-'*80
+    # pieces = dict(list(grouped))
+    # print pieces['bad','bad1']
+    mean = grouped['A'].mean()
+    print mean
+    print mean['bad','bad1']
+    print mean['good','good1']
+
+def test18():
+    d = {'one' : pd.Series([1., 2., 3.], index=['a', 'b', 'c']),'two' : pd.Series([1., 2., 3., 4.], index=['a', 'b', 'c', 'd'])}
+    df = pd.DataFrame(d)
+
+    ds = [{'one' : 4,'two':2},{'one' : 5,'two' : 3},{'one' : 6,'two' : 4},{'two' : 7,'three':10}]
+    #构建一个新的DataFrame，dfs
+    dfs = pd.DataFrame(ds,index=['e','f','g','h'])
+    df_t=pd.concat([df,dfs])#合并两个DataFrame
+    print df_t
+
+    left = pd.DataFrame({'key': ['foo1', 'foo2'], 'lval': [1, 2]})
+    right = pd.DataFrame({'key': ['foo1', 'foo2'], 'rval': [4, 5]})
+    #构建了两个DataFrame
+    print pd.merge(left, right, on='key')#按照key列将两个DataFrame join在一起
+
+
+def test19():
+    df = pd.DataFrame(np.random.randn(10, 4), index=np.arange(10), columns=list('ABCD'))
+    print df
+    k = 3
+    df1 = pd.cut(df['A'],k)
+    print df1
+    df2 = pd.qcut(df['A'],k)
+    print df2
+
 
 if __name__ == '__main__':
-    test15()
+    # .at, .iat, .loc, .iloc 和 .ix.
+    test1()
 
     pass
