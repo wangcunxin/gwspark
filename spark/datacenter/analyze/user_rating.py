@@ -76,7 +76,7 @@ def main(argv):
             rating.append(ele)
 
         # 4.dump to mango
-        print 'rate rating:len', len(rating)
+        print 'rate rating:', len(rating)
         conf_file = "../../../userprofile/config-mongodb.properties"
         prop = Properties()
         conf = prop.getProperties(conf_file)

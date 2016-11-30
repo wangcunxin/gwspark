@@ -100,7 +100,13 @@ def test7():
     x2n = np.random.randn(100, 2)
     print x2n[0:10]
 
+
+def test8():
+    n = 0.18889
+    print round(n,4)
+
+
 if __name__ == '__main__':
-    test7()
+    test8()
 
     pass

@@ -8,6 +8,7 @@ import pandas as pd
 from sklearn import metrics
 from sklearn.externals import joblib
 from sklearn.linear_model import LogisticRegression
+
 from sklearn.preprocessing import Normalizer
 
 from spark.datacenter.etl.hbase_client import HBaseClient
@@ -74,13 +75,14 @@ def load_data(dat):
     print 'load mongodb:', len(scores)
 
     df_up = pd.DataFrame(lines, columns=qualifiers[0:11])
-    df_up_filter = df_up[df_up['avg_count']>0 & df_up['buy_quantity']>0]
+    df_up_filter = df_up[(df_up['avg_count'] > 0) & (df_up['buy_quantity'] > 0)].dropna(how='any')
     # df_up.index = df_up['userid'].tolist()
     df_score = pd.DataFrame(scores, columns=fields)
     white_list = ['50000125', '50000949', '50000891', '55859667']
-    df_score_filter = df_score[~df_score['userid'].isin(white_list)]
+    df_score_filter = df_score[~df_score['userid'].isin(white_list)].dropna(how='any')
 
     df = pd.merge(df_up_filter, df_score_filter, on='userid')
+
     return df
 
 
@@ -90,7 +92,7 @@ def preprocess_data(original):
     num_1 = df_score_1.shape[0]
     num_0 = num_1 * 10
     df_score_0 = original[original['score'] == 0][0:num_0]
-    shard = pd.concat([df_score_0, df_score_1])[0:5]
+    shard = pd.concat([df_score_0, df_score_1])
 
     userid = shard.iloc[:, 0]
     features = shard.iloc[:, 1:11]
@@ -112,21 +114,26 @@ def preprocess_data(original):
 
 
 def train_model(data, out):
-    file_model = out + '/model/model_predict_lr.bin'
-    file_plot = out + '/plot/model_predict_lr_roc.png'
+    file_model = out + '/model/lr.bin'
+    file_plot = out + '/plot/lr_roc.png'
     # split data: train,test=7,3
-    from sklearn import cross_validation
-    X_train, X_test, y_train, y_test = cross_validation.train_test_split(data.iloc[:, 0:11], data.iloc[:, 11],
-                                                                         test_size=0.3, random_state=0)
-    print X_train, X_test, y_train, y_test
+    from sklearn import cross_validation as cv
+    X_train, X_test, y_train, y_test = cv.train_test_split(data.iloc[:, 1:11],
+                                                           data.iloc[:, 11],
+                                                           test_size=0.3,
+                                                           random_state=0)
     # model
-    model = LogisticRegression(penalty='l1', max_iter=10, n_jobs=10)
+    model = LogisticRegression(penalty='l2', max_iter=100, n_jobs=1, C=1.0)
     model.fit(X_train, y_train)
+    print model
+    print 'intercept', model.intercept_
+    print 'coef', model.coef_
+
     predicted = model.predict(X_test)
     expected = y_test
 
-    print metrics.classification_report(expected, predicted)
-    print metrics.confusion_matrix(expected, predicted)
+    print 'classification_report', metrics.classification_report(expected, predicted)
+    print 'confusion_matrix', metrics.confusion_matrix(expected, predicted)
     fpr, tpr, thresholds = metrics.roc_curve(expected, predicted)
     print 'fpr, tpr, thresholds:', fpr, tpr, thresholds
     print 'auc:', metrics.auc(fpr, tpr)
@@ -145,6 +152,7 @@ def main(argv):
     out = argv[1]
     # load data
     original = load_data(dat)
+    print 'finish loading data'
     # preprocess
     data = preprocess_data(original)
     # model
@@ -158,10 +166,10 @@ if __name__ == '__main__':
     computing procedures:
     1.hbase:up_dat,mongodb:rc_user_rating
     2.df:[userid,10 fields,label]
-        #0:#1=10:1
+        #0:#1=10:1 or 1:1
     3.normalize:sigmoid
     4.lr:train,test
-        train:test=7:3
+        train:test=7:3 or 6:4
     5.lr:evaluate,save:model,roc,auc
     '''
     begin = time.time()

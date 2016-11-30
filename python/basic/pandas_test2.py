@@ -19,7 +19,8 @@ def test2():
     print df.sort_values(by=['A','B'], ascending=[1,0])
     df['E']=[1,2,3,4]
     df2 = df[~df['E'].isin([2,3])]
-    print df2
+    df3 = df[(df['A']>-0.5) & (df['B']>0.5)]
+    print df3
 
 
 def test3():
@@ -32,8 +33,32 @@ def test3():
     pass
 
 
+def test4():
+    df = pd.DataFrame(np.random.randn(4, 2), index=np.arange(4), columns=list('AB'))
+    print df
+    def max_row(a):
+        b=a[0]
+        c=a[1]
+        d=a[1]
+        if b>c:
+            d=b
+        else:
+            d=c
+        return d
+    print df.apply(max_row,axis=1)
+    pass
+
+
+def test5():
+    df = pd.DataFrame(np.random.randn(4, 2), index=np.arange(4), columns=list('AB'))
+    print df
+    for index, row in df.iterrows():
+        print index, row
+        for col_name in df.columns:
+            print row[col_name]
+
 if __name__ == '__main__':
 
-    test2()
+    test5()
 
     pass
