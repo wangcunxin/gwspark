@@ -4,6 +4,7 @@ import time
 import sys
 import math
 import pandas as pd
+import numpy as np
 
 from sklearn import metrics
 from sklearn.externals import joblib
@@ -81,8 +82,7 @@ def load_data(dat):
     white_list = ['50000125', '50000949', '50000891', '55859667']
     df_score_filter = df_score[~df_score['userid'].isin(white_list)].dropna(how='any')
 
-    df = pd.merge(df_up_filter, df_score_filter, on='userid')
-
+    df = pd.merge(df_up_filter, df_score_filter, on='userid', how='inner')
     return df
 
 
@@ -91,10 +91,17 @@ def preprocess_data(original):
     df_score_1 = original[original['score'] > 0]
     num_1 = df_score_1.shape[0]
     num_0 = num_1 * 10
-    df_score_0 = original[original['score'] == 0][0:num_0]
-    shard = pd.concat([df_score_0, df_score_1])
 
-    userid = shard.iloc[:, 0]
+    df_score_0 = original[original['score'] == 0]
+    indexs_0 = []
+    for i in df_score_0.index:
+        indexs_0.append(i)
+
+    sampler_0 = np.random.permutation(indexs_0)
+    sample_0 = original.take(sampler_0[0:num_0])
+
+    shard = pd.concat([df_score_1, sample_0])
+    # userid = shard.iloc[:, 0]
     features = shard.iloc[:, 1:11]
     score = shard.iloc[:, 11]
     # 2.normalize fields features
@@ -104,12 +111,12 @@ def preprocess_data(original):
     score_binary = Binarizer(threshold=0).fit_transform(score)
 
     df = pd.DataFrame(features_normalize, columns=qualifiers[1:11])
-    df.insert(0, qualifiers[0], userid)
+    # bug:insert nan
+    # df.insert(0, qualifiers[0], userid)
     df['label'] = score_binary[0]
 
     row_size = df.shape[0]
     print 'row size:', row_size
-
     return df
 
 
@@ -118,12 +125,12 @@ def train_model(data, out):
     file_plot = out + '/plot/lr_roc.png'
     # split data: train,test=7,3
     from sklearn import cross_validation as cv
-    X_train, X_test, y_train, y_test = cv.train_test_split(data.iloc[:, 1:11],
-                                                           data.iloc[:, 11],
+    X_train, X_test, y_train, y_test = cv.train_test_split(data.iloc[:, 0:10],
+                                                           data.iloc[:, 10],
                                                            test_size=0.3,
                                                            random_state=0)
-    # model
-    model = LogisticRegression(penalty='l2', max_iter=100, n_jobs=1, C=1.0)
+    # modelX_train
+    model = LogisticRegression(penalty='l1', max_iter=100, n_jobs=1, C=1.0)
     model.fit(X_train, y_train)
     print model
     print 'intercept', model.intercept_
@@ -138,12 +145,13 @@ def train_model(data, out):
     print 'fpr, tpr, thresholds:', fpr, tpr, thresholds
     print 'auc:', metrics.auc(fpr, tpr)
 
-    import matplotlib.pyplot as plt
-    plt.plot(fpr, tpr, color='r')
-    plt.show()
-    plt.savefig(file_plot, format='png')
-
     joblib.dump(model, file_model)
+
+    # import matplotlib.pyplot as plt
+    # plt.plot(fpr, tpr, color='r')
+    # plt.show()
+    # plt.savefig(file_plot, format='png')
+
     print 'finish to dump model'
 
 

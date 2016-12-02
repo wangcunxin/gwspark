@@ -28,8 +28,13 @@ def main(argv):
                      "days,buy_cinemas,buy_cities,avg_time,avg_count".split(",")
 
         lines = []
+        regex = r"[/.]"
+        import re
         for r in rs:
             rowkey = r.row.split('#')[1]
+            match = re.search(regex, rowkey)
+            if match:
+                continue
             arr = [rowkey]
             columns = r.columns
             for qualifier in qualifiers:
@@ -45,7 +50,7 @@ def main(argv):
         # 2.scale features
         if len(lines) == 0:
             return
-        dataset = np.loadtxt(lines, delimiter=",")
+        dataset = np.loadtxt(lines, delimiter=sep)
         x1 = dataset[:, 1:len(lines) + 1]
         y1 = dataset[:, 0]
 
