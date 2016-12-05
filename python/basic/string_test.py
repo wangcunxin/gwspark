@@ -112,6 +112,19 @@ def test4():
             print map[key]
 
 
+def test5():
+    s = "123#/activity/sns/relation.xhtml"
+    regex = r"/"
+    import re
+    match = re.search(regex, s)
+    if match:
+        result = match.group(0)
+    else:
+        result = s
+    print result
+    pass
+
+
 if __name__ == '__main__':
     # test0()
     # encoding()
@@ -119,7 +132,7 @@ if __name__ == '__main__':
     # url_quote()
     # test1()
     # test2()
-    test4()
+    test5()
     # split_len()
 
     pass
