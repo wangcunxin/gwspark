@@ -48,29 +48,28 @@ def load_data(dat):
 
     print 'load hbase:', len(lines)
 
-    df_up = pd.DataFrame(lines, columns=qualifiers[0:11]).dropna(how='any')
+    df_up = pd.DataFrame(lines, columns=qualifiers[0:11])
+    # special account list
     white_list = ['50000125', '50000949', '50000891', '55859667']
-    df = df_up[~df_up['userid'].isin(white_list)].dropna(how='any')
+    df = df_up[~df_up['userid'].isin(white_list)]
 
     return df
 
 
-def preprocess_data(original):
+def preprocess_data(shard):
     # preprocess
-    shard = original
-    userid = shard.iloc[:, 0]
+    userids = shard.iloc[:, 0]
     features = shard.iloc[:, 1:11]
-
     # 2.normalize fields features
     features_normalize = Normalizer().fit_transform(features)
-
     df = pd.DataFrame(features_normalize, columns=qualifiers[1:11])
-    df.insert(0, qualifiers[0], userid)
+    # shard.iloc[:, 0]的结果，创建df，不会改变index
+    df_userids = pd.DataFrame(userids.tolist(), columns=[qualifiers[0]])
+    # union all column:axis=1,row:axis=0
+    df2 = pd.concat([df_userids, df], axis=1, join='inner', join_axes=[df_userids.index])
 
-    row_size = df.shape[0]
-    print 'row size:', row_size
-
-    return df
+    print 'row size:', df2.shape[0]
+    return df2
 
 
 def max_row(row):
@@ -87,7 +86,8 @@ def max_row(row):
 
 
 def predict_user(data, input, dat):
-    file_model = input + '/model/lr.bin'
+    # /home/kevin/temp/model/lr_201602.bin
+    file_model = input
     model = joblib.load(file_model)
     print model
     predicted = model.predict_proba(X=data.iloc[:, 1:11])
@@ -95,13 +95,13 @@ def predict_user(data, input, dat):
     uids = data.iloc[:, 0]
     probas = predicted[:, 1]
     proba_list = []
+
     for i in range(len(uids)):
         uid = uids[i]
         proba = round(probas[i], 4)
         key = "%s%s%s" % (dat, sep2, uid)
         ele = {'_id': key, 'userid': uid, 'proba': proba}
         proba_list.append(ele)
-
     # dump to mango
     print 'user predict proba:', len(proba_list)
     conf_file = "../../../userprofile/config-mongodb.properties"
@@ -118,8 +118,6 @@ def predict_user(data, input, dat):
     mongodbClient.setCollection(colName)
     mongodbClient.insertMany(proba_list)
 
-    print 'finish to predict'
-
 
 def main(argv):
     dat = argv[0]
@@ -129,9 +127,10 @@ def main(argv):
     print 'finish loading data'
     # preprocess
     data = preprocess_data(original)
+    print 'finish preprocessing data'
     # model
     predict_user(data, input, dat)
-
+    print 'finish to predict'
     pass
 
 
@@ -142,15 +141,17 @@ if __name__ == '__main__':
     2.df:[userid,10 fields]
     3.normalize:sigmoid
     4.lr:load,predict
-    5.mongodb:rc_user_prediction:{"-id":"ym_userid","userid":"","probability":0,"label":0}
-
+    5.mongodb:rc_user_prediction:{"_id":"ym_userid","userid":"","proba":0}
     '''
     begin = time.time()
     if len(sys.argv) != 3:
         print 'user_predict_lr.py <ym> <input>'
         sys.exit(-1)
     print sys.argv
-    main(sys.argv[1:])
+    try:
+        main(sys.argv[1:])
+    except Exception, e:
+        print 'exception happened:', e
     end = time.time()
     now = datetime.datetime.now()
     dat = now.strftime("%Y-%m-%d %H:%M:%S")

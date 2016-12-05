@@ -90,7 +90,7 @@ def preprocess_data(original):
     # #0:#1=10:1
     df_score_1 = original[original['score'] > 0]
     num_1 = df_score_1.shape[0]
-    num_0 = num_1 * 10
+    num_0 = num_1 * 1
 
     df_score_0 = original[original['score'] == 0]
     indexs_0 = []
@@ -120,9 +120,9 @@ def preprocess_data(original):
     return df
 
 
-def train_model(data, out):
-    file_model = out + '/model/lr.bin'
-    file_plot = out + '/plot/lr_roc.png'
+def train_model(data, out, dat):
+    file_model = '%s/model/lr_%s.bin' % (out, dat)
+    file_plot = '%s/plot/lr_roc_%s.png' % (out, dat)
     # split data: train,test=7,3
     from sklearn import cross_validation as cv
     X_train, X_test, y_train, y_test = cv.train_test_split(data.iloc[:, 0:10],
@@ -132,6 +132,7 @@ def train_model(data, out):
     # modelX_train
     model = LogisticRegression(penalty='l1', max_iter=100, n_jobs=1, C=1.0)
     model.fit(X_train, y_train)
+    print file_model, file_plot
     print model
     print 'intercept', model.intercept_
     print 'coef', model.coef_
@@ -152,8 +153,6 @@ def train_model(data, out):
     # plt.show()
     # plt.savefig(file_plot, format='png')
 
-    print 'finish to dump model'
-
 
 def main(argv):
     dat = argv[0]
@@ -163,9 +162,10 @@ def main(argv):
     print 'finish loading data'
     # preprocess
     data = preprocess_data(original)
+    print 'finish preprocessing data'
     # model
-    train_model(data, out)
-
+    train_model(data, out, dat)
+    print 'finish to dump model'
     pass
 
 
