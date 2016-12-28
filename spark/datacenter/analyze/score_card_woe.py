@@ -178,9 +178,21 @@ def get_woe(df,column):
 def compute_woes(df,out):
     print df.head()
     file_path = out+"/%s.csv"
+    rets_dict = {}
     for column in qualifiers[1:16]:
+        map = {}
         woe_iv=get_woe(df.loc[:,[column,'label']],column)
         woe_iv.to_csv(file_path % column)
+        for index,row in woe_iv.iterrows():
+            map[index]=row['woe']
+        rets_dict[column] = map
+    print rets_dict
+    return rets_dict
+
+
+def replace_features(df,map):
+
+    return
 
 
 def main(argv):
@@ -195,8 +207,13 @@ def main(argv):
     # process
     df_done = process_data(df_pre)
     print 'finish processing data'
-    compute_woes(df_done,out)
+    # compute woe iv
+    column_woe_dict = compute_woes(df_done,out)
     print 'finish computing woe and dumping'
+    # replace all the features
+    replace_features(df_done,column_woe_dict)
+    print 'finish replacing feature with woe'
+
     pass
 
 
