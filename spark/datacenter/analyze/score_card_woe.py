@@ -111,13 +111,13 @@ def preprocess_data(original):
     X_binary = Binarizer(threshold=0).fit_transform(X)
     df = df_filter.drop(columns, axis=1)
     # categorical
-    df['flowernum'] = X_binary[:,0].astype(np.object)
-    df['replycount'] = X_binary[:,1].astype(np.object)
-    df['label'] = X_binary[:,2].astype(np.object)
+    df['flowernum'] = X_binary[:, 0].astype(np.object)
+    df['replycount'] = X_binary[:, 1].astype(np.object)
+    df['label'] = X_binary[:, 2].astype(np.int)
 
     # multi-values source
-    sources_dict = {'email':'1','app':'2','code':'3','mobile':'4','unionPayLottery':'5','other':'0'}
-    df['source'] = PandasUtils.encoding(df['source'],sources_dict)
+    sources_dict = {'email': '1', 'app': '2', 'code': '3', 'mobile': '4', 'unionPayLottery': '5', 'other': '0'}
+    df['source'] = PandasUtils.encoding(df['source'], sources_dict)
     # continuous
     fields = qualifiers[1:11]
     for field in fields:
@@ -125,7 +125,8 @@ def preprocess_data(original):
     return df
 
 
-def process_data(df):
+def process_data(df, out):
+    file_path = out + "/%s.csv"
     fields = qualifiers[1:11]
     bins_dict = {'buy_times': [2, 3, 4, 5],
                  'buy_quantity': [3, 4, 5, 7, 8, 9, 10],
@@ -137,9 +138,9 @@ def process_data(df):
                  'buy_cities': [2],
                  'avg_time': [12, 36, 72, 202, 1310],
                  'avg_count': [4, 36, 67]}
-    bins_dict = {'buy_times': [1.1,2.1],
-                 'buy_quantity': [1.1,2.1],
-                 'amount': [20.1,52.1],
+    bins_dict = {'buy_times': [1.1, 2.1],
+                 'buy_quantity': [1.1, 2.1],
+                 'amount': [20.1, 52.1],
                  'discount_amount': [29, 45, 106],
                  'discount_times': [1, 2, 3, 4],
                  'days': [1.2, 1.6],
@@ -152,11 +153,13 @@ def process_data(df):
         print field
         df[field] = PandasUtils.binning(df[field], bins).astype(np.object)
     print df.shape
+    # 1.save
+    df.to_csv(file_path % "pd_binning")
     return df
 
 
-def get_woe(df,column):
-    df2 = df.groupby(column,as_index=True)
+def get_woe(df, column):
+    df2 = df.groupby(column, as_index=True)
     rows = df2['label'].count()
     bad = df2['label'].sum()
     good = rows - bad
@@ -175,29 +178,34 @@ def get_woe(df,column):
     return df3
 
 
-def compute_woes(df,out):
+def compute_woes(df, out):
     print df.head()
-    file_path = out+"/%s.csv"
+    file_path = out + "/woe_%s.csv"
     rets_dict = {}
     for column in qualifiers[1:16]:
         map = {}
-        woe_iv=get_woe(df.loc[:,[column,'label']],column)
+        woe_iv = get_woe(df.loc[:, [column, 'label']], column)
+        # 2.save
         woe_iv.to_csv(file_path % column)
-        for index,row in woe_iv.iterrows():
-            map[index]=row['woe']
+        for index, row in woe_iv.iterrows():
+            map[index] = row['woe']
         rets_dict[column] = map
     print rets_dict
     return rets_dict
 
 
-def replace_features(df,map):
-
-    return
+def replace_features(df, dic, out):
+    file_path = out + "/%s.csv"
+    fields = qualifiers[1:16]
+    for field in fields:
+        df[field] = PandasUtils.encoding(df[field], dic.get(field))
+    # 3.save
+    df.to_csv(file_path % "pd_woe")
 
 
 def main(argv):
     dat = argv[0]
-    out = argv[1]
+    out = argv[1]+"/"+dat
     # load data
     original = load_data(dat)
     print 'finish loading data'
@@ -205,14 +213,14 @@ def main(argv):
     df_pre = preprocess_data(original)
     print 'finish preprocessing data'
     # process
-    df_done = process_data(df_pre)
-    print 'finish processing data'
+    df_done = process_data(df_pre, out)
+    print 'finish processing data and dumping'
     # compute woe iv
-    column_woe_dict = compute_woes(df_done,out)
+    column_woe_dict = compute_woes(df_done, out)
     print 'finish computing woe and dumping'
     # replace all the features
-    replace_features(df_done,column_woe_dict)
-    print 'finish replacing feature with woe'
+    replace_features(df_done, column_woe_dict, out)
+    print 'finish replacing feature with woe and dumping'
 
     pass
 
@@ -224,7 +232,7 @@ if __name__ == '__main__':
     1.hbase:up_dat,mongodb:rc_user_rating
     2.filter special data
     3.calculate:bad,good,sum(bad),sum(good)
-    4.dump:feature,woe,iv
+    4.dump:pd_binning,woe_field,pd_woe
     '''
     begin = time.time()
     if len(sys.argv) != 3:
