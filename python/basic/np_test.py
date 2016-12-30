@@ -104,7 +104,10 @@ def test7():
 def test8():
     n = 0.18889
     print round(n,4)
-
+    a = 600.0 + (20.0 / np.log(2.0)) * np.log(1.0 / 50.0)
+    print a
+    print 20 / np.log(2)
+    print np.log(1 / 50)
 
 if __name__ == '__main__':
     test8()

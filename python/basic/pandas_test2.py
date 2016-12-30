@@ -89,6 +89,54 @@ def test7():
     df3 = pd.concat([df,df2], axis=1, join='inner')
     print df3.iloc[:,0].tolist()
 
+
+def test8():
+    df = pd.DataFrame({"id":[1,2,3,4,5,6], "raw_grade":['a', 'd', 'b', 'c', 'a', 'e']})
+    print df
+    df["grade1"] = df["raw_grade"].astype("category")
+    print df
+    df["grade2"] = df["grade1"].cat.set_categories([1,2,3,4,5])
+    print df
+
+
+def coding(col, codeDict):
+    colCoded = pd.Series(col, copy=True)
+    for key, value in codeDict.items():
+        colCoded.replace(key, value, inplace=True)
+    return colCoded
+
+
+def get_monotonic_list(min, arr, max):
+    return [min] + arr + [max]
+
+
+def binning(col, cut_points, labels=None):
+    minval = col.min()
+    maxval = col.max()
+    break_points = get_monotonic_list(minval, cut_points, maxval)
+    # 如果没有标签，则使用默认标签0 ... (n-1)
+    if not labels:
+        labels = range(len(cut_points) + 1)
+    colBin = pd.cut(col, bins=break_points, labels=labels, include_lowest=True)
+    return colBin
+
+
+def test9():
+    df = pd.DataFrame({"id":[1,2,3,4,5,6], "raw_grade":['a', 'b', 'b', 'c', 'a', 'c']})
+    df["raw_grade2"] = coding(df["raw_grade"], {'a':0,'b':1,'c':2})
+    df["id"] = df["id"].astype(np.object)
+    print df
+    cut_points = [2,5]
+    labels = ['a1','a2','a3']
+    df["id2"] = binning(df["id"], cut_points, labels)
+    print df
+    print df.dtypes
+    print df.loc[:,["id"]]
+    print df['id'].max
+    print range(10)
+    pass
+
+
 if __name__ == '__main__':
-    test7()
+    test9()
     pass

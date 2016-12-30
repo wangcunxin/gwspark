@@ -14,7 +14,6 @@ __author__ = 'kevin'
 def fit_model(df, out):
     # data = df.dropna(how='any').fillna(0)
     data = df.replace('inf',0).replace('-inf',0)
-    print data.head()
     file_model = '%s/model_lr.bin' % out
     print file_model
     # split data: train,test=7,3
@@ -51,13 +50,11 @@ def main(argv):
 
     df = pd.read_csv(file_pd_woe)
     del df['Unnamed: 0']
-    print df.head()
+    print df.shape
     print 'completed to load pd file'
 
     fit_model(df, out)
     print 'completed'
-
-    pass
 
 
 if __name__ == '__main__':
@@ -77,5 +74,4 @@ if __name__ == '__main__':
     now = datetime.datetime.now()
     dat = now.strftime("%Y-%m-%d %H:%M:%S")
     print dat, 'total cost', round((end - begin) / 60, 3), 'minutes'
-
     pass

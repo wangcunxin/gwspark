@@ -13,11 +13,12 @@ def test1():
     print type(encode_json)
 
     decode_json = json.loads(encode_json)
-    print type(decode_json)
     print decode_json
+    print type(decode_json)
 
     for map in decode_json:
         print map.get('a')
+
 
 if __name__ == '__main__':
 

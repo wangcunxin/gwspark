@@ -13,6 +13,10 @@ def test2():
     s = ','.join(str(i) for i in l)
     print s
 
+    dic = {1:'a',2:'b'}
+    for k in dic.keys():
+        print k
+
 
 if __name__ == '__main__':
     # test1()
