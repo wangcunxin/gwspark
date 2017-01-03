@@ -2,6 +2,7 @@
 import time
 import sys
 import datetime
+import numpy as np
 import pandas as pd
 
 from sklearn import metrics
@@ -11,9 +12,27 @@ from sklearn.linear_model import LogisticRegression
 __author__ = 'kevin'
 
 
+def random_sample(original):
+    # #0:#1=10:1
+    df_score_1 = original[original['label'] == 1]
+    num_1 = df_score_1.shape[0]
+    num_0 = num_1 * 1
+
+    df_score_0 = original[original['label'] == 0]
+    indexs_0 = []
+    for i in df_score_0.index:
+        indexs_0.append(i)
+
+    sampler_0 = np.random.permutation(indexs_0)
+    sample_0 = original.take(sampler_0[0:num_0])
+
+    shard = pd.concat([df_score_1, sample_0])
+    return shard
+
+
 def fit_model(df, out):
     # data = df.dropna(how='any').fillna(0)
-    data = df.replace('inf',0).replace('-inf',0)
+    data = df.replace('inf', 0).replace('-inf', 0)
     file_model = '%s/model_lr.bin' % out
     print file_model
     # split data: train,test=7,3
@@ -29,7 +48,7 @@ def fit_model(df, out):
     print model
     print df.columns
     print 'intercept', model.intercept_
-    print 'coef', model.coef_
+    print 'coef', ','.join(str(i) for i in model.coef_[0,:])
 
     predicted = model.predict(X_test)
     expected = y_test
@@ -53,7 +72,10 @@ def main(argv):
     print df.shape
     print 'completed to load pd file'
 
-    fit_model(df, out)
+    df_sample = random_sample(df)
+    print 'completed to sample'
+
+    fit_model(df_sample, out)
     print 'completed'
 
 
