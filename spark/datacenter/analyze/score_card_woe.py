@@ -154,7 +154,7 @@ def process_data(df, out):
         df[field] = PandasUtils.binning(df[field], bins).astype(np.object)
     print df.shape
     # 1.save
-    df.to_csv(file_path % "pd_binning")
+    df.to_csv(file_path % "pd_binning",index=None)
     return df
 
 
@@ -200,7 +200,7 @@ def replace_features(df, dic, out):
     for field in fields:
         df[field] = PandasUtils.encoding(df[field], dic.get(field))
     # 3.save
-    df.to_csv(file_path % "pd_woe")
+    df.to_csv(file_path % "pd_woe",index=None)
 
 
 def main(argv):

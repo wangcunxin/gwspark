@@ -68,7 +68,6 @@ def main(argv):
     file_pd_woe = out + "/pd_woe.csv"
 
     df = pd.read_csv(file_pd_woe)
-    del df['Unnamed: 0']
     print df.shape
     print 'completed to load pd file'
 

@@ -71,7 +71,6 @@ def main(argv):
     score_dict = load_data(file_score_dict)
 
     df = pd.read_csv(file_pd_woe)
-    del df['Unnamed: 0']
     print df.shape
     print 'completed to load data'
 
