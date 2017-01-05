@@ -111,8 +111,8 @@ def preprocess_data(original):
     X_binary = Binarizer(threshold=0).fit_transform(X)
     df = df_filter.drop(columns, axis=1)
     # categorical
-    df['flowernum'] = X_binary[:, 0].astype(np.object)
-    df['replycount'] = X_binary[:, 1].astype(np.object)
+    df['flowernum'] = X_binary[:, 0].astype(np.int)
+    df['replycount'] = X_binary[:, 1].astype(np.int)
     df['label'] = X_binary[:, 2].astype(np.int)
 
     # multi-values source
