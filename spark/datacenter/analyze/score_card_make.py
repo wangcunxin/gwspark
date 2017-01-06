@@ -46,7 +46,7 @@ def save_score_card(binning_score, intercept, out):
     print 'a,b,base_score:', a, b, base_score
     # dump
     encode_json = json.dumps(binning_score)
-    file_object = open(out+'/user_score_card.dict','w')
+    file_object = open(out + '/user_score_card.dict', 'w')
     try:
         file_object.write(encode_json)
     finally:

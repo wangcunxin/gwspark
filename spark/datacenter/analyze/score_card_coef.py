@@ -48,7 +48,7 @@ def fit_model(df, out):
     print model
     print df.columns
     print 'intercept', model.intercept_
-    print 'coef', ','.join(str(i) for i in model.coef_[0,:])
+    print 'coef', ','.join(str(i) for i in model.coef_[0, :])
 
     predicted = model.predict(X_test)
     expected = y_test

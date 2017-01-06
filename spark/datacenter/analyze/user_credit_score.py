@@ -4,8 +4,9 @@ import time
 import sys
 import datetime
 import numpy as np
+
 import pandas as pd
-from pandas.core.common import flatten
+
 from spark.datacenter.analyze.pandas_utils import PandasUtils
 
 __author__ = 'kevin'
@@ -46,7 +47,7 @@ def mark_score(score_dict, df, out):
     return user_scores
 
 
-def dump_data(user_scores_dict):
+def dump_data(out, user_scores_dict, df_origin):
     userids = []
     scores = []
     for uid in user_scores_dict.keys():
@@ -55,10 +56,11 @@ def dump_data(user_scores_dict):
         scores.append(score)
 
     df = pd.DataFrame({"userid": pd.Series(np.array(userids)), "score": pd.Series(np.array(scores))})
+    df['label'] = df_origin['label']
     print df.head()
     print df.shape
-    print df.describe()
-
+    print df.describe(percentiles=np.array([0.01, 0.02, 0.03, 0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 0.8, 0.9, 0.95]))
+    df.to_csv(out + "pd_user_credit_score.csv", index=None)
     pass
 
 
@@ -75,7 +77,7 @@ def main(argv):
     print 'completed to load data'
 
     user_scores_dict = mark_score(score_dict, df, out)
-    dump_data(user_scores_dict)
+    dump_data(out, user_scores_dict, df)
     print 'completed'
 
 
