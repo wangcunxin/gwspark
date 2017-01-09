@@ -60,7 +60,7 @@ def dump_data(out, user_scores_dict, df_origin):
     print df.head()
     print df.shape
     print df.describe(percentiles=np.array([0.01, 0.02, 0.03, 0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 0.8, 0.9, 0.95]))
-    df.to_csv(out + "pd_user_credit_score.csv", index=None)
+    df.to_csv(out + "/pd_user_credit_score.csv", index=None)
     pass
 
 
