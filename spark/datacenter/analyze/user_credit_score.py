@@ -15,7 +15,7 @@ qualifiers = "userid," \
              "buy_times,buy_quantity,amount,discount_amount,discount_times," \
              "days,buy_cinemas,buy_cities,avg_time,avg_count," \
              "mobile,source,headpic,flowernum,replycount," \
-             "score".split(",")
+             "label,score".split(",")
 
 
 def load_data(file_score_dict):
@@ -34,28 +34,22 @@ def mark_score(base_score, score_dict, df):
     fields = qualifiers[1:16]
     for field in fields:
         df[field] = PandasUtils.encoding(df[field], score_dict.get(field))
-
-    user_scores = {}
-    for index, row in df.iterrows():
-        userid = str(row['userid'].astype(np.int))
-        scores = base_score
-        for field in fields:
-            scores += row[field]
-        user_scores[userid] = scores
-    print user_scores.__len__()
-    return user_scores
-
-
-def dump_data(out, user_scores_dict, df_origin):
-    userids = []
+    # user_scores = {}
     scores = []
-    for uid in user_scores_dict.keys():
-        score = user_scores_dict[uid]
-        userids.append(uid)
+    for index, row in df.iterrows():
+        # userid = str(row['userid'].astype(np.int))
+        score = base_score
+        for field in fields:
+            score += row[field]
+        #user_scores[userid] = score
         scores.append(score)
+    df['score'] = scores
 
-    df = pd.DataFrame({"userid": pd.Series(np.array(userids)), "score": pd.Series(np.array(scores))})
-    df['label'] = df_origin['label']
+    return df
+
+
+def dump_data(out, df_score):
+    df = df_score.drop(qualifiers[1:16], axis=1)
     print df.head()
     print df.shape
     print df.describe(percentiles=np.array([0.01, 0.02, 0.03, 0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 0.8, 0.9, 0.95]))
@@ -75,10 +69,10 @@ def main(argv):
     print df.shape
     print 'completed to load data'
 
-    user_scores_dict = mark_score(base_score, score_dict, df)
+    df_score = mark_score(base_score, score_dict, df)
     print 'completed to mark score'
 
-    dump_data(out, user_scores_dict, df)
+    dump_data(out, df_score)
     print 'completed'
 
 

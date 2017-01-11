@@ -76,12 +76,12 @@ def load_data(dat):
 
     df_up = pd.DataFrame(lines, columns=qualifiers[0:16])
     # filter:hbase
-    df_up_filter = df_up[(df_up['avg_count'] > '0') & (df_up['buy_quantity'] > '0')]
+    # df_up_filter = df_up[(df_up['avg_count'] > '0') & (df_up['buy_quantity'] > '0')]
     df_score = pd.DataFrame(scores, columns=fields)
     # filter:mongodb
     white_list = ['50000125', '50000949', '50000891', '55859667']
     df_score_filter = df_score[~df_score['userid'].isin(white_list)]
-    df = pd.merge(df_up_filter, df_score_filter, on='userid', how='inner')
+    df = pd.merge(df_up, df_score_filter, on='userid', how='inner')
 
     print df.shape
     return df

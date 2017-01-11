@@ -137,6 +137,18 @@ def test9():
     pass
 
 
+def test10():
+    df = pd.DataFrame(np.random.randn(10, 2), index=np.arange(10), columns=list('AB'))
+    df['C'] = [1,1,0,0,1,2,0,0,1,3]
+    print df.head()
+    df1 = df.groupby(by=['C'])
+    print df1.count()
+    print df1.mean()
+    print df1['A'].mean()
+
+    pass
+
+
 if __name__ == '__main__':
-    test9()
+    test10()
     pass
