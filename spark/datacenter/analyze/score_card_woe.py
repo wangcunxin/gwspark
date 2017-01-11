@@ -2,14 +2,10 @@
 import datetime
 import time
 import sys
-import pandas as pd
 import numpy as np
+import pandas as pd
 
-from sklearn import metrics
-from sklearn.externals import joblib
-from sklearn.linear_model import LogisticRegression
 from spark.datacenter.analyze.pandas_utils import PandasUtils
-
 from spark.datacenter.etl.hbase_client import HBaseClient
 from spark.datacenter.etl.mongodb_client import MongodbClient
 from userprofile.properties import Properties
@@ -30,7 +26,6 @@ def load_data(dat):
     # 1.hbase:load and filter
     hBaseClient = HBaseClient()
     table = "up_dat"
-
     cfs = ['DF']
     rs = hBaseClient.scanByPrefix(table, dat, cfs)
 
@@ -52,7 +47,7 @@ def load_data(dat):
             arr.append(value)
 
         lines.append(arr)
-
+    # print lines[0:20]
     print 'load hbase:', len(lines)
 
     # 2. mongodb
@@ -77,17 +72,17 @@ def load_data(dat):
     for r in rs:
         ar = [r[fields[0]], r[fields[1]]]
         scores.append(ar)
-
     print 'load mongodb:', len(scores)
 
     df_up = pd.DataFrame(lines, columns=qualifiers[0:16])
-    df_up_filter = df_up[(df_up['avg_count'] > 0) & (df_up['buy_quantity'] > 0)]
-
+    # filter:hbase
+    df_up_filter = df_up[(df_up['avg_count'] > '0') & (df_up['buy_quantity'] > '0')]
     df_score = pd.DataFrame(scores, columns=fields)
+    # filter:mongodb
     white_list = ['50000125', '50000949', '50000891', '55859667']
     df_score_filter = df_score[~df_score['userid'].isin(white_list)]
-
     df = pd.merge(df_up_filter, df_score_filter, on='userid', how='inner')
+
     print df.shape
     return df
 

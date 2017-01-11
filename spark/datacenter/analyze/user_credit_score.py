@@ -30,8 +30,7 @@ def load_data(file_score_dict):
     return score_dict
 
 
-def mark_score(score_dict, df, out):
-    base_score = 508.76
+def mark_score(base_score, score_dict, df):
     fields = qualifiers[1:16]
     for field in fields:
         df[field] = PandasUtils.encoding(df[field], score_dict.get(field))
@@ -67,16 +66,18 @@ def dump_data(out, user_scores_dict, df_origin):
 def main(argv):
     dat = argv[0]
     out = argv[1] + "/" + dat
+    base_score = float(argv[2])
     file_score_dict = out + '/user_score_card.dict'
     file_pd_woe = out + "/pd_binning.csv"
 
     score_dict = load_data(file_score_dict)
-
     df = pd.read_csv(file_pd_woe)
     print df.shape
     print 'completed to load data'
 
-    user_scores_dict = mark_score(score_dict, df, out)
+    user_scores_dict = mark_score(base_score, score_dict, df)
+    print 'completed to mark score'
+
     dump_data(out, user_scores_dict, df)
     print 'completed'
 
@@ -86,8 +87,8 @@ if __name__ == '__main__':
     user credit score
     '''
     begin = time.time()
-    if len(sys.argv) != 3:
-        print 'user_credit_score.py <ym> <out>'
+    if len(sys.argv) != 4:
+        print 'user_credit_score.py <ym> <out> <base_score>'
         sys.exit(-1)
     print sys.argv
     try:

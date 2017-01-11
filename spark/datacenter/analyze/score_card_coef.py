@@ -16,7 +16,7 @@ def random_sample(original):
     # #0:#1=10:1
     df_score_1 = original[original['label'] == 1]
     num_1 = df_score_1.shape[0]
-    num_0 = num_1 * 1
+    num_0 = num_1 * 10
 
     df_score_0 = original[original['label'] == 0]
     indexs_0 = []
@@ -32,7 +32,7 @@ def random_sample(original):
 
 def fit_model(df, out):
     # data = df.dropna(how='any').fillna(0)
-    data = df.replace('inf', 0).replace('-inf', 0)
+    data = df.replace('inf', 1.0).replace('-inf', -1.0)
     file_model = '%s/model_lr.bin' % out
     print file_model
     # split data: train,test=7,3
