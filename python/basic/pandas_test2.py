@@ -7,7 +7,8 @@ __author__ = 'kevin'
 
 
 def test1():
-    conn_mysql= pymysql.connect(host='192.168.8.108', port=3306, user='logcenter', passwd='logcenter123', db='logcenter')
+    conn_mysql = pymysql.connect(host='192.168.8.108', port=3306, user='logcenter', passwd='logcenter123',
+                                 db='logcenter')
     df = pd.read_sql('select * from agg_day_access limit 10;', con=conn_mysql)
     print df
     conn_mysql.close()
@@ -16,19 +17,19 @@ def test1():
 
 def test2():
     df = pd.DataFrame(np.random.randn(4, 4), index=np.arange(4), columns=list('ABCD'))
-    print df.sort_values(by=['A','B'], ascending=[1,0])
-    df['E']=[1,2,3,4]
-    df2 = df[~df['E'].isin([2,3])]
-    df3 = df[(df['A']>-0.5) & (df['B']>0.5)]
+    print df.sort_values(by=['A', 'B'], ascending=[1, 0])
+    df['E'] = [1, 2, 3, 4]
+    df2 = df[~df['E'].isin([2, 3])]
+    df3 = df[(df['A'] > -0.5) & (df['B'] > 0.5)]
     print df3
 
 
 def test3():
     lines = []
     template = "%s,a,b"
-    for i in range(0,5,1):
-        lines.append([i,'a','b'])
-    df = pd.DataFrame(lines,columns=['id','A','B'])
+    for i in range(0, 5, 1):
+        lines.append([i, 'a', 'b'])
+    df = pd.DataFrame(lines, columns=['id', 'A', 'B'])
     print df
     print df.shape
     print df['id'].tolist()
@@ -42,16 +43,30 @@ def test3():
 def test4():
     df = pd.DataFrame(np.random.randn(4, 2), index=np.arange(4), columns=list('AB'))
     print df
+
     def max_row(a):
-        b=a[0]
-        c=a[1]
-        d=a[1]
-        if b>c:
-            d=b
-        else:
-            d=c
+        b = a[0]
+        c = a[1]
+        d = c
+        if b > c:
+            d = b
         return d
-    print df.apply(max_row,axis=1)
+
+    print df.apply(lambda x: np.max(x), axis=1)
+    print df.apply(max_row, axis=1)
+
+    def multiply(a):
+        return a * 2
+
+    print "**" * 10
+    print df.apply(lambda x: np.mean(x), axis=1)
+    print df.apply(lambda x: np.sum(x), axis=1)
+    print "**" * 10
+    print df.apply(lambda x: x * 2)
+    print df.apply(multiply)
+    print "**" * 10
+    print df.apply(lambda x: np.log(x))
+
     pass
 
 
@@ -86,16 +101,16 @@ def test7():
     size = 10
     df = pd.DataFrame(np.random.randn(size, 2), index=np.arange(size), columns=list('AB'))
     df2 = pd.DataFrame(np.random.randn(size, 1), index=np.arange(size), columns=list('C'))
-    df3 = pd.concat([df,df2], axis=1, join='inner')
-    print df3.iloc[:,0].tolist()
+    df3 = pd.concat([df, df2], axis=1, join='inner')
+    print df3.iloc[:, 0].tolist()
 
 
 def test8():
-    df = pd.DataFrame({"id":[1,2,3,4,5,6], "raw_grade":['a', 'd', 'b', 'c', 'a', 'e']})
+    df = pd.DataFrame({"id": [1, 2, 3, 4, 5, 6], "raw_grade": ['a', 'd', 'b', 'c', 'a', 'e']})
     print df
     df["grade1"] = df["raw_grade"].astype("category")
     print df
-    df["grade2"] = df["grade1"].cat.set_categories([1,2,3,4,5])
+    df["grade2"] = df["grade1"].cat.set_categories([1, 2, 3, 4, 5])
     print df
 
 
@@ -122,16 +137,16 @@ def binning(col, cut_points, labels=None):
 
 
 def test9():
-    df = pd.DataFrame({"id":[1,2,3,4,5,6], "raw_grade":['a', 'b', 'b', 'c', 'a', 'c']})
-    df["raw_grade2"] = coding(df["raw_grade"], {'a':0,'b':1,'c':2})
+    df = pd.DataFrame({"id": [1, 2, 3, 4, 5, 6], "raw_grade": ['a', 'b', 'b', 'c', 'a', 'c']})
+    df["raw_grade2"] = coding(df["raw_grade"], {'a': 0, 'b': 1, 'c': 2})
     df["id"] = df["id"].astype(np.object)
     print df
-    cut_points = [2,5]
-    labels = ['a1','a2','a3']
+    cut_points = [2, 5]
+    labels = ['a1', 'a2', 'a3']
     df["id2"] = binning(df["id"], cut_points, labels)
     print df
     print df.dtypes
-    print df.loc[:,["id"]]
+    print df.loc[:, ["id"]]
     print df['id'].max
     print range(10)
     pass
@@ -139,7 +154,7 @@ def test9():
 
 def test10():
     df = pd.DataFrame(np.random.randn(10, 2), index=np.arange(10), columns=list('AB'))
-    df['C'] = [1,1,0,0,1,2,0,0,1,3]
+    df['C'] = [1, 1, 0, 0, 1, 2, 0, 0, 1, 3]
     print df.head()
     df1 = df.groupby(by=['C'])
     print df1.count()
@@ -150,5 +165,5 @@ def test10():
 
 
 if __name__ == '__main__':
-    test10()
+    test4()
     pass
