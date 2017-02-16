@@ -28,8 +28,12 @@ def encoding():
 
 def decoding():
     '''
-    unicode->encode->str
-    str->decode->unicode
+    str和unicode都是basestring的子类，basestring有以下两个方法：
+    encode()： 将unicode字符串转换为其他编码字符串，参数为转换后编码
+    decode()： 将其他编码转换为unicode字符串，参数为转换前编码
+
+    unicode->encode()->str
+    str->decode()->unicode
     '''
 
     u = u"米国"
@@ -38,6 +42,8 @@ def decoding():
     x2 = s.decode("utf-8")
     print repr(x1), repr(x2)
     print u + x2, s + x1
+    # s是code_A的str
+    # s.decode('code_A').encode('code_B')
 
 
 def url_quote():

@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 
-from sklearn import tree
+from sklearn import ensemble
 from sklearn import metrics
 from sklearn import cross_validation as cv
 
@@ -21,10 +21,9 @@ if __name__ == '__main__':
     X = dataset[:, 0:7]
     y = dataset[:, 8]
 
-    # 决策树:分类与回归树(Classification and Regression Trees ,CART)算法
     x_train, x_test, y_train, y_test = cv.train_test_split(X, y, test_size=0.3)
     # fit a CART model to the data
-    model = tree.DecisionTreeClassifier(criterion='entropy')
+    model = ensemble.RandomForestClassifier(n_jobs=2)
     print(model)
     model.fit(x_train, y_train)
 
@@ -34,15 +33,17 @@ if __name__ == '__main__':
     # summarize the fit of the model
     print(metrics.classification_report(expected, predicted))
     print(metrics.confusion_matrix(expected, predicted))
-
-    # 把决策树结构写入文件
-    path = "/home/kevin/temp/model/%s"
-    with open(path % "tree.dot", 'w') as f:
-        f = tree.export_graphviz(model, out_file=f)
-
+    print '*'*10
+    score = model.score(x_test, y_test)
+    print score
+    print model.classes_
+    print model.n_classes_
+    print model.min_weight_fraction_leaf
+    print model.max_leaf_nodes
+    print '*'*10
     ''''' 系数反映每个特征的影响力。越大表示该特征在分类中起到的作用越大 '''
     print(model.feature_importances_)
-    # a problem:0/1
+    # 0:1
     probas = model.predict_proba(X=x_test)
-    print probas[0:10, :]
+    print probas[0:5, 1]
     pass
