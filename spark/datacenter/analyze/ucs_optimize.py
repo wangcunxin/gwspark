@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 import sys
 import pandas as pd
+from spark.datacenter.sparklogger import *
 
 __author__ = 'kevin'
 
@@ -10,8 +11,9 @@ def main(argv):
     out = argv[1] + "/" + dat
     file_path = out + '/pd_user_credit_score.csv'
     df = pd.read_csv(file_path)
-    print df.shape
-    print 'completed to load data'
+    log = logging.getLogger('gwspark.ucs_optimize')
+    log.info(df.shape)
+    log.info('completed to load data')
 
     df_gb = df.groupby(by=['label'])
     print df_gb['score'].describe()

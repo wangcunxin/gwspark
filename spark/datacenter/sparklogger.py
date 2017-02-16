@@ -3,10 +3,11 @@ __author__ = 'wangcx'
 
 import logging
 # 创建一个logger
-logger = logging.getLogger('sparklogger')
+logger = logging.getLogger('gwspark')
 logger.setLevel(logging.INFO)
 # 创建一个handler，用于写入日志文件
-fh = logging.FileHandler('sparklog.log')
+log_file = '/home/kevin/temp/%s'
+fh = logging.FileHandler(log_file % 'gwspark.log')
 fh.setLevel(logging.DEBUG)
 # 再创建一个handler，用于输出到控制台
 ch = logging.StreamHandler()
