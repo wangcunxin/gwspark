@@ -1,4 +1,10 @@
-sudo pip install cx_Oracle --trusted-host http://pypi.douban.com/simple
+vim ~/.pip/pip.conf
+[global]
+index-url = http://mirrors.aliyun.com/pypi/simple
+index-url = https://pypi.tuna.tsinghua.edu.cn/simple
+index-url = http://pypi.douban.com/simple
+
+sudo pip install xgboost --trusted-host http://pypi.douban.com/simple
 
 #plot
 matplotlib
@@ -17,4 +23,6 @@ pycharm 自动安装默认在/home/kevin/.local/lib/python2.7/site-packages
 或者在~/spark_env/lib/python2.7/site-packages
 
 
-
+# pip install tensorflow
+sudo pip install --upgrade https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-0.8.0-cp27-none-linux_x86_64.whl
+python>import tensorflow as tf
