@@ -4,7 +4,7 @@ __author__ = 'wangcx'
 import logging
 # 创建一个logger
 logger = logging.getLogger('gwspark')
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 # 创建一个handler，用于写入日志文件
 log_file = '/home/kevin/temp/%s'
 fh = logging.FileHandler(log_file % 'gwspark.log')

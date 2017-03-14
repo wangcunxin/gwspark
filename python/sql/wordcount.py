@@ -19,9 +19,9 @@ def filter_special(kv,words):
 if __name__ == '__main__':
     master = "local[1]"
     app_name = "spark_sql_wc"
-    input = 'hdfs://debian:8020/input/words.csv'
+    input = 'hdfs://alice:8020/user/hadoop/input/*'
 
-    spark_home = '/home/kevin/galaxy/spark-1.6.2-bin-hadoop2.6'
+    spark_home = '/home/kevin/galaxy/spark-2.1.0-bin-hadoop2.6'
     os.environ['SPARK_HOME'] = spark_home
 
     conf = (SparkConf()
