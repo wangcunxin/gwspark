@@ -7,11 +7,12 @@ from array import array as pyarray
 from numpy import append, array, int8, uint8, zeros
 
 
-class NeuralNet(object):
+class NeuralNetworks(object):
     # 初始化神经网络，sizes是神经网络的层数和每层神经元个数
     def __init__(self, sizes):
         self.sizes_ = sizes
         self.num_layers_ = len(sizes)  # 层数
+        # np.random.randn(x,y)->shape(x,y)
         self.w_ = [np.random.randn(y, x) for x, y in zip(sizes[:-1], sizes[1:])]  # w_、b_初始化为正态分布随机数
         self.b_ = [np.random.randn(y, 1) for y in sizes[1:]]
 
@@ -23,8 +24,10 @@ class NeuralNet(object):
     def sigmoid_prime(self, z):
         return self.sigmoid(z) * (1 - self.sigmoid(z))
 
-    def feedforward(self, x):
+    # 给神经网络的输入x，输出对应的值
+    def feed_forward(self, x):
         for b, w in zip(self.b_, self.w_):
+            # np.dot矩阵乘法
             x = self.sigmoid(np.dot(w, x) + b)
         return x
 
@@ -81,7 +84,7 @@ class NeuralNet(object):
                 print("Epoch {0} complete".format(j))
 
     def evaluate(self, test_data):
-        test_results = [(np.argmax(self.feedforward(x)), y) for (x, y) in test_data]
+        test_results = [(np.argmax(self.feed_forward(x)), y) for (x, y) in test_data]
         return sum(int(x == y) for (x, y) in test_results)
 
     def cost_derivative(self, output_activations, y):
@@ -89,7 +92,7 @@ class NeuralNet(object):
 
     # 预测
     def predict(self, data):
-        value = self.feedforward(data)
+        value = self.feed_forward(data)
         return value.tolist().index(max(value))
 
     # 保存训练模型
@@ -158,7 +161,7 @@ def load_samples(dataset="training_data"):
 if __name__ == '__main__':
     INPUT = 28 * 28
     OUTPUT = 10
-    net = NeuralNet([INPUT, 40, OUTPUT])
+    net = NeuralNetworks([INPUT, 40, OUTPUT])
 
     train_set = load_samples(dataset='training_data')
     test_set = load_samples(dataset='testing_data')

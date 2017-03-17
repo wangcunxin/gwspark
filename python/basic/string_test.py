@@ -134,11 +134,11 @@ def test5():
 if __name__ == '__main__':
     # test0()
     # encoding()
-    # decoding()
+    decoding()
     # url_quote()
     # test1()
     # test2()
-    test5()
+    # test5()
     # split_len()
 
     pass

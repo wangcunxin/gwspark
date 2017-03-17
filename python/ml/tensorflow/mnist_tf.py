@@ -6,23 +6,20 @@ import numpy as np
 from tensorflow.examples.tutorials.mnist import input_data
 # 下载mnist数据集
 mnist = input_data.read_data_sets('/tmp/', one_hot=True)
-# 数字(label)只能是0-9，神经网络使用10个出口节点就可以编码表示0-9；
-#  1 -> [0,1.0,0,0,0,0,0,0,0]   one_hot表示只有一个出口节点是hot
-#  2 -> [0,0.1,0,0,0,0,0,0,0]
-#  5 -> [0,0,0,0,0,1.0,0,0,0]
-#  /tmp是macOS的临时目录，重启系统数据丢失; Linux的临时目录也是/tmp
+# 数字(label)只能是0-9，神经网络使用10个出口节点就可以one hot编码表示0-9；
 
-# 定义每个层有多少'神经元''
+"""
+层数的选择：线性数据使用1层，非线性数据使用2, 超级非线性使用3+。层数／神经元过多,会导致过拟合
+"""
+# 定义每个层有多少'神经元'
 n_input_layer = 28 * 28  # 输入层
 
-n_layer_1 = 500  # hide layer
-n_layer_2 = 1000  # hide layer
-n_layer_3 = 300  # hide layer(隐藏层)听着很神秘，其实就是除输入输出层外的中间层
+# 隐藏层,除输入输出层外的中间层
+n_layer_1 = 50  # hide layer
+n_layer_2 = 100  # hide layer
+n_layer_3 = 30  # hide layer
 
 n_output_layer = 10  # 输出层
-"""
-层数的选择：线性数据使用1层，非线性数据使用2册, 超级非线性使用3+册。层数／神经元过多会导致过拟合
-"""
 
 
 # 定义待训练的神经网络(feedforward)
@@ -80,7 +77,7 @@ def train_neural_network(X, Y):
             # print(predict.eval(feed_dict={X:[features]}))
         correct = tf.equal(tf.argmax(predict, 1), tf.argmax(Y, 1))
         accuracy = tf.reduce_mean(tf.cast(correct, 'float'))
-        print('准确率: ', accuracy.eval({X: mnist.test.images, Y: mnist.test.labels}))
+        print("准确率: ", accuracy.eval({X: mnist.test.images, Y: mnist.test.labels}))
 
 
 train_neural_network(X, Y)
