@@ -128,17 +128,24 @@ def test5():
     else:
         result = s
     print result
+
+
+def test6():
+    sep = "/001"
+    msg = "x %(sep)s y" % {"sep":sep}
+    print msg
+
     pass
 
 
 if __name__ == '__main__':
     # test0()
     # encoding()
-    decoding()
+    # decoding()
     # url_quote()
     # test1()
     # test2()
-    # test5()
+    test6()
     # split_len()
 
     pass

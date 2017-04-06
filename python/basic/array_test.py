@@ -31,10 +31,13 @@ def test3():
     s = "小格"
     s2 = u"矩阵"
     print s, s2
+    tup = 'x','y'
+    s3 = ','.join(tup)
+    print s3
     pass
 
 
 if __name__ == '__main__':
-    test2()
+    test3()
 
     pass
