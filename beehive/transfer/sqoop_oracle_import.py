@@ -29,7 +29,8 @@ def execute_sqoop(sqoop_cmd, db_name, tb_name, hive_tb_name, columns):
 
 def main():
     # load config
-    conf_file = "../../config/oracle.properties"
+    current_path = os.path.abspath('.')
+    conf_file = "%s/../../config/oracle.properties" % current_path
     prop = Properties()
     conf = prop.getProperties(conf_file)
     sep = "/001"

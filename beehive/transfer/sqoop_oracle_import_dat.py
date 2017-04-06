@@ -31,7 +31,8 @@ def main(argv):
     # input
     dat = argv[0]
     # load config
-    conf_file = "../../config/oracle.properties"
+    current_path = os.path.abspath('.')
+    conf_file = "%s/../../config/oracle.properties" % current_path
     prop = Properties()
     conf = prop.getProperties(conf_file)
     sep = "/001"
