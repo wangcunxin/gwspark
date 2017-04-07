@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+import os
 import urllib
 
 __author__ = 'kevin'
@@ -97,7 +98,7 @@ def test3():
 
 
 def split_len():
-    s = '0,10182083,1.54147109533,0.471977610293,0.724502159724,0.79783597792,1.88915296905,3.1377854748,1.39666051655,-0.136251841423,-0.102877731382,-0.0871245641184,-0.0991232624695,0.077884674608,2.05527435558'
+    s = '0,10182083,1.54147109533'
     print len(s.split(","))
 
 
@@ -134,7 +135,9 @@ def test6():
     sep = "/001"
     msg = "x %(sep)s y" % {"sep":sep}
     print msg
-
+    p = os.path.realpath(__file__)
+    print os.path.abspath('.')
+    print p
     pass
 
 
