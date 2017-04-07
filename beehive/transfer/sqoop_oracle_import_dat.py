@@ -90,6 +90,36 @@ def main(argv):
                         'dat': dat, 'hive_tb_name': hive_tb_name})
     execute_sqoop(sqoop_cmd, db_name, tb_name, hive_tb_name, dat, columns)
 
+    # 2.5 import open_drama_item
+    tb_name = "open_drama_item"
+    hive_tb_name = "o_%s" % tb_name
+    columns = "RECORDID,THEATREID,THEATRENAME,DRAMAID,DRAMANAME,ROOMID,ROOMNAME,PLAYTIME,LANGUAGE,PRICE,COSTPRICE," \
+              "GEWAPRICE,STATUS,OPENTIME,CLOSETIME,UPDATETIME,OPEN_TYPE,TOPICID,TAKEMETHOD,TAKEMSG,BUYLIMIT,NOTIFYMSG1," \
+              "NOTIFYMSG2,NOTIFYMSG3,REMARK,ELECARD,DPID,SEATLINK,SPFLAG,OTHERINFO,MINPOINT,MAXPOINT,PARTNER,CITYCODE," \
+              "GSELLNUM,EXPRESSID,NOTIFYREMARK,BARCODE,MAXBUY,MSGMINUTE,PERIOD,NAME,ENDTIME,SELLER,SELLERSEQ,PRINT," \
+              "SORTNUM,TICKETFACEID,SEATNUM,ASELLNUM,CSELLNUM,LOCKNUM,SALECYCLE,ETICKETHOUR,ETICKETWEEKHOUR,GREETINGS," \
+              "PREPAY,SHOWTYPE,CHECKSEAT,CRMMSG,GYPMSG,CRMFLAG,FIELDLOGO,ROOMNUM,IDCARD,QRCODEREMARK,TAKEADDRESS," \
+              "IDMAXBUY,REMNANTNOTICE,REMNANTNUM"
+
+    cmd = '''
+    sqoop import \
+    --connect "jdbc:oracle:thin:@%(host)s:%(port)s:%(sid)s" \
+    --username %(username)s \
+    --password %(password)s \
+    --table "%(db_name)s.%(tb_name)s" \
+    --columns "%(columns)s" \
+    --where "to_char(OPENTIME,'yyyyMMdd')='%(dat)s'" \
+    --fields-terminated-by %(sep)s \
+    --target-dir /user/sqoop/%(hive_tb_name)s/dat='%(dat)s'  \
+    --append \
+    -m 1;
+    '''
+    sqoop_cmd = cmd % ({'sid': sid, 'host': host, 'port': port, 'username': username, 'password': password,
+                        'db_name': db_name, 'tb_name': tb_name, 'sep': sep, 'columns': columns,
+                        'dat': dat, 'hive_tb_name': hive_tb_name})
+    execute_sqoop(sqoop_cmd, db_name, tb_name, hive_tb_name, dat, columns)
+    pass
+
 
 if __name__ == '__main__':
     begin = time.time()

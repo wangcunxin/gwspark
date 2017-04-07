@@ -77,7 +77,7 @@ class HiveUtil:
         --connect "jdbc:mysql://%(host)s:%(port)s/%(db_name)s" \
         --username %(username)s \
         --password %(password)s \
-        --table "%(db_name)s.%(tb_name)s" \
+        --table "%(tb_name)s" \
         --columns "%(columns)s" \
         --fields-terminated-by %(sep)s \
         --target-dir /user/sqoop/%(hive_tb_name)s  \

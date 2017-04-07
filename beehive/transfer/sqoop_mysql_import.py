@@ -37,7 +37,6 @@ def main():
 
     # modify 1.movie
     db_name = "movie"
-    sid = conf.get("%s.sid" % db_name)
     host = conf.get("%s.host" % db_name)
     port = conf.get("%s.port" % db_name)
     username = conf.get("%s.username" % db_name)
@@ -45,7 +44,12 @@ def main():
     # modify 1.1 import movie
     tb_name = "movie"
     hive_tb_name = "o_%s" % tb_name
-    columns = "RECORDID,EMAIL,PASSWORD,NICKNAME,MOBILE,REJECTED,BINDSTATUS,PRIKEY,NEEDVALID,HEADPIC,ADDTIME,IP"
+    columns = "recordid,language,moviename,englishname,pinyin,director,playwright,actors,filmfirm,originalcountry," \
+              "releasedate,type,honor,website,remark,adddate,moviealias,hotvalue,tag1,state,prevideo,clickedtimes," \
+              "xiangqu,quguo,generalmark,generalmarkedtimes,updatetime,logo,collectedtimes,highlight,playdate," \
+              "briefname,seodescription,seotitle,imdbid,boughtcount,avgprice,videolen,content,minprice,maxprice," \
+              "otherinfo,edition,color_eggs,hlogo,offlinedate,filmtype,importmodel,period,characteristic,agelayer," \
+              "filmmark,countryrelease,samemovie"
     # modify
     cmd = HiveUtil.templet_sqoop_sql_mysql()
     sqoop_cmd = cmd % ({'host': host, 'port': port, 'username': username, 'password': password,
@@ -56,8 +60,12 @@ def main():
     # modify 1.2 import cinema
     tb_name = "cinema"
     hive_tb_name = "o_%s" % tb_name
-    columns = "RECORDID,MEMBER_VERSION,POINTVALUE,NEWTASK,EXPVALUE,REALNAME,NICKNAME,HEADPIC,UPDATETIME,SEX," \
-              "FROMCITY,RIGHTS,OTHERINFO,ADDTIME,SOURCE,REGFROM,INVITETYPE,INVITEID,IP,NEEDVALID"
+    columns = "recordid,citycode,name,englishname,pinyin,postalcode,contactphone,opentime,fax,website,email,transport,remark," \
+              "indexareacode,adddate,exitnumber,stationid,hotvalue,googlemap,logo,clickedtimes,xiangqu,quguo,generalmark," \
+              "generalmarkedtimes,brandname,feature,discount,updatetime,collectedtimes,coupon,pointx,pointy,briefname," \
+              "briefaddress,seodescription,seotitle,flag,lineidlist,booking,newaddress,countycode,countyname,indexareaname," \
+              "firstpic,otherinfo,stationname,bpointx,bpointy,popcorn,contact_telephone,subway_transport,mobile_phone," \
+              "englishaddress,manage_company,show_gawara,pcid"
     sqoop_cmd = cmd % ({'host': host, 'port': port, 'username': username, 'password': password,
                         'db_name': db_name, 'tb_name': tb_name, 'sep': sep, 'columns': columns,
                         'hive_tb_name': hive_tb_name})

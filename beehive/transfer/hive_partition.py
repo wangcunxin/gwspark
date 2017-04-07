@@ -20,7 +20,7 @@ def main(argv):
     # create hive table partitions
     dat = argv[0]
     dbs = ["default", "beehive"]
-    tbs = ['o_comment', 'o_activity', 'o_point', 'o_payment', 'o_drama_treasure', 'o_wala_treasure', 'o_member_label_ext']
+    tbs = ['o_comment', 'o_activity', 'o_point', 'o_payment', 'o_drama_treasure', 'o_wala_treasure', 'o_member_label_ext', 'o_open_drama_item']
     for db in dbs:
         for tb in tbs:
             create_partition(db, tb, dat)
