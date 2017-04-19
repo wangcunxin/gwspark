@@ -29,6 +29,7 @@ class HiveUtil:
         --table "%(db_name)s.%(tb_name)s" \
         --columns "%(columns)s" \
         --fields-terminated-by %(sep)s \
+        --hive-drop-import-delims \
         --target-dir /user/sqoop/%(hive_tb_name)s  \
         --append \
         -m 1;
@@ -46,6 +47,7 @@ class HiveUtil:
         --columns "%(columns)s" \
         --where "to_char(ADDTIME,'yyyyMMdd')='%(dat)s'" \
         --fields-terminated-by %(sep)s \
+        --hive-drop-import-delims \
         --target-dir /user/sqoop/%(hive_tb_name)s/dat='%(dat)s'  \
         --append \
         -m 1;
@@ -64,6 +66,7 @@ class HiveUtil:
         --columns "%(columns)s" \
         --where "to_char(ADDTIME,'yyyyMMdd')='%(dat)s'" \
         --fields-terminated-by %(sep)s \
+        --hive-drop-import-delims \
         --target-dir /user/sqoop/%(hive_tb_name)s/dat='%(dat)s'  \
         --append \
         -m 1;
@@ -80,6 +83,7 @@ class HiveUtil:
         --table "%(tb_name)s" \
         --columns "%(columns)s" \
         --fields-terminated-by %(sep)s \
+        --hive-drop-import-delims \
         --target-dir /user/sqoop/%(hive_tb_name)s  \
         --append \
         -m 1;

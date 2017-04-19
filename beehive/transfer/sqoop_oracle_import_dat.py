@@ -35,7 +35,7 @@ def main(argv):
     conf_file = "%s/../../config/oracle.properties" % current_path
     prop = Properties()
     conf = prop.getProperties(conf_file)
-    sep = "/001"
+    sep = "\001"
 
     # 2.webdata
     db_name = "webdata"
@@ -108,8 +108,9 @@ def main(argv):
     --password %(password)s \
     --table "%(db_name)s.%(tb_name)s" \
     --columns "%(columns)s" \
-    --where "to_char(OPENTIME,'yyyyMMdd')='%(dat)s'" \
+    --where "to_char(PLAYTIME,'yyyyMMdd')='%(dat)s'" \
     --fields-terminated-by %(sep)s \
+    --hive-drop-import-delims \
     --target-dir /user/sqoop/%(hive_tb_name)s/dat='%(dat)s'  \
     --append \
     -m 1;

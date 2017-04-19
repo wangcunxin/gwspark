@@ -33,7 +33,7 @@ def main():
     conf_file = "%s/../../config/mysql.properties" % current_path
     prop = Properties()
     conf = prop.getProperties(conf_file)
-    sep = "/001"
+    sep = "\001"
 
     # modify 1.movie
     db_name = "movie"

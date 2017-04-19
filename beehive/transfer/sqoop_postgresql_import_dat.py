@@ -35,7 +35,7 @@ def main(argv):
     conf_file = "%s/../../config/postgresql.properties" % current_path
     prop = Properties()
     conf = prop.getProperties(conf_file)
-    sep = "/001"
+    sep = "\001"
 
     # 2.wala
     db_name = "wala"
