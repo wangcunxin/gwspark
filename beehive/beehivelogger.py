@@ -3,7 +3,7 @@ __author__ = 'wangcx'
 
 import logging
 # 创建一个logger
-module_name = 'gwspark'
+module_name = 'beehive'
 logger = logging.getLogger(module_name)
 logger.setLevel(logging.DEBUG)
 # 创建一个handler，用于写入日志文件
