@@ -2,24 +2,24 @@
 __author__ = 'kevin'
 
 
-def inOrder(i, n, down):
+def in_order(i, n, down):
     '''
     binary tree
     中序遍历：左-根-右
     '''
     if i > n:
         return
-    inOrder(i + 1, n, True)
+    in_order(i + 1, n, True)
     # 三目表达式 a if true else b
     direction = 'down' if down else 'up'
     arr.append(direction)
     print direction
-    inOrder(i + 1, n, False)
+    in_order(i + 1, n, False)
 
 
 if __name__ == '__main__':
     arr = []
-    inOrder(1, 3, True)
+    in_order(1, 3, True)
     print ','.join(arr)
     '''
     折纸问题：向上对折n次，上折痕为up，下折痕为down，对折n次后得到什么结果，数组记录
