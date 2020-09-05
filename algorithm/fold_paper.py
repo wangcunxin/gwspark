@@ -4,7 +4,7 @@ __author__ = 'kevin'
 
 def in_order(i, n, down):
     '''
-    binary tree
+    二叉树 binary tree
     中序遍历：左-根-右
     '''
     if i > n:
