@@ -18,8 +18,18 @@ def test2():
         print k
 
 
+def test3():
+    val=2
+    nums = [0,1,2,2,3,0,4,2]
+    j=len(nums)
+    for i in range(j-1,-1,-1):
+        if nums[i]==val:
+            nums.remove(val)
+    print len(nums)
+
+
 if __name__ == '__main__':
     # test1()
-    test2()
+    test3()
 
     pass
